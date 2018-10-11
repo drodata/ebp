@@ -1,0 +1,52 @@
+# yii console command
+/yii
+
+# phpstorm project files
+.idea
+
+# netbeans project files
+nbproject
+
+# zend studio for eclipse project files
+.buildpath
+.project
+.settings
+
+# windows thumbnail cache
+Thumbs.db
+
+# composer vendor dir
+/vendor
+
+# composer itself is not needed
+composer.phar
+
+# Mac DS_Store Files
+.DS_Store
+
+# phpunit itself is not needed
+phpunit.phar
+# local phpunit config
+/phpunit.xml
+
+# vagrant runtime
+/.vagrant
+
+vim-session
+*.mwb.bak
+yat.sql
+yat-bak.sql
+
+backend/views/test/index.php
+
+# Vim's swap files
+*.swp
+
+# Vim session files
+*.vim-session
+
+common/yii2-sensitive.json
+
+# gitbook's published directory
+_book/
+docs/_book/

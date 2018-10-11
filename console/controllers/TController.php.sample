@@ -1,0 +1,35 @@
+<?php
+namespace console\controllers;
+
+use Yii;
+use yii\console\Controller;
+use drodata\helpers\Html;
+use common\models\Lookup;
+use backend\models\User;
+
+/**
+ * 控制台测试控制器。在控制台执行 `./yii t` 执行 index 动作。
+ */
+class TController extends Controller
+{
+    public function actionIndex()
+    {
+        /*
+        $url = 'http://api.yalong.com/users';
+
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HEADER => false,
+            CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+            CURLOPT_POST => false,
+            //CURLOPT_POSTFIELDS => json_encode([ ]),  
+        ]); 
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        echo $response . "\n";
+        */
+    }
+}

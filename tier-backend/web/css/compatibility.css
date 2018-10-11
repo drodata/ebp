@@ -1,0 +1,96 @@
+/** ======================
+ *  Bootstrap
+ ** ====================== */
+.tooltip-inner  { white-space:pre; max-width:none; }
+.table-hover > tbody > tr:hover {
+  background-color: #d9ead3;
+}
+.input-group .input-group-addon {
+    background-color: #eee;
+}
+.form-group .btn,
+.button-group .btn {margin: 0 3px;}
+.bg-hl {
+    background-color: #ffff00;
+    color: #000;
+    padding:2px 5px;
+}
+.bg-red { 
+    background-color: red;
+    color: #fff;
+    padding:2px 5px;
+}
+.text-red { color: red !important;}
+.text-green { color: green !important;}
+.label-purple {
+  background-color: #605ca8 !important;
+  color: white !important;
+}
+.nav-tabs .badge,
+.box-header .badge
+{margin-left: 5px;}
+
+/** ======================
+ *  AdminLTE
+ ** ====================== */
+.content-wrapper { background-color: #eee; }
+.box-tools > a, .box-tools > button { margin: 0 5px; }
+.grid-view .glyphicon, .grid-view .fa {
+    margin:0 2px;
+    font-size: 16px;
+}
+
+    /* override adminLTE's alert style, use bootstrap's */
+.alert-warning {
+ color: #8a6d3b !important;
+  background-color: #fcf8e3 !important;
+  border-color: #faebcc !important;
+}
+.alert-warning a.btn { 
+    text-decoration: none;
+    margin-left: 5px;
+}
+.alert-success {
+  color: #3c763d !important;
+  background-color: #dff0d8 !important;
+  border-color: #d6e9c6 !important;
+}
+
+.alert a {text-decoration: none;}
+.alert-info {
+  color: #31708f !important;
+  background-color: #d9edf7 !important;
+  border-color: #bce8f1 !important;
+}
+.alert-info hr { border-top-color: #a6e1ec !important; }
+.alert-info .alert-link { color: #245269 !important; }
+
+/** ======================
+ *  main-tabs layout
+ ** ====================== */
+.top-tab-header {
+    padding-top:30px;
+    background-color: #eee;
+    border-bottom: 1px solid #ddd;
+}
+.top-tab-header > .nav-tabs { border-bottom: 0px solid #ddd; }
+.nav-tabs > li > a {
+    color: #555;
+    margin-right: 2px;
+    line-height: 1.42857143;
+    border: 1px solid transparent;
+    border-radius: 4px 4px 0 0;
+}
+.top-tab-header > .nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus {
+    background-color: #f9f9f9;
+    border-top: 2px solid orange;
+}
+.top-tab-header .nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
+    border-color: #ddd;
+}
+.tab-content { padding: 20px 0 10px; }
+.nav-tabs-custom > .nav-tabs .fa,
+.btn .fa
+{margin: 0 3px;}
