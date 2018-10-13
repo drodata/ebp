@@ -4,6 +4,7 @@ namespace backend\models;
 
 use Yii;
 use drodata\helpers\Html;
+use backend\models\Taxonomy;
 use yii\helpers\ArrayHelper;
 use yii\base\NotSupportedException;
 
@@ -15,4 +16,51 @@ use yii\base\NotSupportedException;
  */
 class Lookup extends \drodata\models\Lookup
 {
+    /**
+     * SPU 属性
+     */
+    public static function properties()
+    {
+        return Taxonomy::items('spu-property');
+    }
+    /**
+     * SPU 属性
+     */
+    public static function specifications($parent = null)
+    {
+        return Taxonomy::items('spu-specification', $parent);
+    }
+    /**
+     * SPU 属性、规格总 map. 格式:
+     *
+     * [
+     *     '<PROPERTY_ID>' => [
+     *         '<SPECIFICATION_ID>' => '',
+     *         // ...
+     *     ],
+     * ]
+     *
+     */
+    public static function propertyMap()
+    {
+        $map = [];
+        foreach (static::properties() as $id => $property) {
+            $subMap = ArrayHelper::map(
+                Taxonomy::find()->where(['parent_id' => $id])->asArray()->all(),
+                'id', 'name'
+            );
+            if (empty($subMap)) {
+                $map[$id] = [];
+            } else {
+                foreach ($subMap as $sid => $name) {
+                    $map[$id][] = [
+                        'id' => $sid,
+                        'text' => $name,
+                    ];
+                }
+            } 
+        }
+
+        return $map;
+    }
 }

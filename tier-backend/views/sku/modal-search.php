@@ -1,10 +1,10 @@
 <?php
 
-use yii\bootstrap\Modal;
-use drodata\helpers\Html;
-
 /* @var $this yii\web\View */
 /* @var $model backend\models\Sku */
+
+use yii\bootstrap\Modal;
+use drodata\helpers\Html;
 
 Modal::begin([
     'id' => 'search-modal',

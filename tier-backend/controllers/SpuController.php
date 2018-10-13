@@ -3,15 +3,17 @@
 namespace backend\controllers;
 
 use Yii;
-use backend\models\CommonForm;
-use backend\models\Spu;
-use backend\models\SpuSearch;
+use yii\base\Model;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\UploadedFile;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use backend\models\CommonForm;
+use backend\models\Spu;
+use backend\models\Sku;
+use backend\models\SpuSearch;
 
 /**
  * SpuController implements the CRUD actions for Spu model.
@@ -127,12 +129,6 @@ class SpuController extends Controller
     {
         $model = new Spu();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', '新记录已创建');
-            return $this->redirect('index');
-            //return $this->redirect(['view', 'id' => $model->id]);
-        }
-
         return $this->render('create', [
             'model' => $model,
         ]);
@@ -146,6 +142,34 @@ class SpuController extends Controller
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
         return Spu::ajaxSubmit($_POST);
+    }
+
+    public function actionAdjustSpecification($id)
+    {
+        $model = $this->findModel($id);
+        $commonForms = [];
+        foreach ($model->properties as $prop) {
+            $commonForm = new CommonForm([
+                'scenario' => CommonForm::SCENARIO_SPU,
+                'specifications' => $prop->specificationIds,
+            ]);
+            $commonForms[$prop->taxonomy_id] = $commonForm;
+        }
+
+        // 确保属性顺序按照 taxonomy.id 排列
+        ksort($commonForms);
+
+        if (Model::loadMultiple($commonForms, Yii::$app->request->post()) && Model::validateMultiple($commonForms)) {
+            $model->adjustSpecification($commonForms);
+
+            Yii::$app->session->setFlash('success', '规格已保存');
+            return $this->redirect('index');
+        }
+
+        return $this->render('adjust-specification', [
+            'model' => $model,
+            'commonForms' => $commonForms,
+        ]);
     }
 
     /**

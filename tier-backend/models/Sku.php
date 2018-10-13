@@ -10,8 +10,6 @@ use yii\data\ActiveDataProvider;
 use yii\db\Exception;
 use drodata\helpers\Html;
 use drodata\helpers\Utility;
-use drodata\behaviors\TimestampBehavior;
-use drodata\behaviors\BlameableBehavior;
 use drodata\behaviors\LookupBehavior;
 
 /**
@@ -92,32 +90,12 @@ class Sku extends \drodata\db\ActiveRecord
 
     /**
      * @inheritdoc
-     *
-    public function fields()
-    {
-        $fields = parent::fields();
-        
-        // 删除涉及敏感信息的字段
-        //unset($fields['auth_key']);
-        
-        // 增加自定义字段
-        return ArrayHelper::merge($fields, [
-            'time' => function () {
-                return $this->readableCreateTime;
-            },
-            'creator' => function () {
-                return $this->readableCreator;
-            },
-        ]);
-    }
-    */
-
-    /**
-     * @inheritdoc
      */
     public function rules()
     {
         return [
+            [['status'], 'default', 'value' => 1],
+
             [['spu_id', 'name', 'status'], 'required'],
             [['spu_id', 'status', 'visible', 'stock', 'threshold'], 'integer'],
             [['introduction'], 'string'],

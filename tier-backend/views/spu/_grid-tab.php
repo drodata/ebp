@@ -3,11 +3,13 @@
 /**
  * 用在首页 Tabs widget 内，用来实现“待办事项”
  */
+
+/* @var $this yii\web\View */
+
 use yii\grid\GridView;
 use drodata\helpers\Html;
 use backend\models\Lookup;
 
-/* @var $this yii\web\View */
 /* @var $searchModel backend\models\SpuSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 

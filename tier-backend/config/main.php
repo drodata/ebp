@@ -24,24 +24,13 @@ return [
             'class' => 'drodata\controllers\TaxonomyController',
             'name' => '商品分类',
         ],
-        'expense-type' => [
-            'class' => 'drodata\controllers\LookupController',
-            'name' => '报销类别',
-            'as access' => [
-                'class' => 'yii\filters\AccessControl',
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-            'as verbs' => [
-                'class' => 'yii\filters\VerbFilter',
-                'actions' => [
-                    'toggle-visibility' => ['POST'],
-                ],
-            ],
+        'spu-property' => [
+            'class' => 'drodata\controllers\TaxonomyController',
+            'name' => '商品属性',
+        ],
+        'spu-specification' => [
+            'class' => 'drodata\controllers\TaxonomyController',
+            'name' => '商品规格',
         ],
     ],
     'controllerNamespace' => 'backend\controllers',

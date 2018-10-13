@@ -10,6 +10,7 @@
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Spu */
+
 use yii\grid\GridView;
 use drodata\helpers\Html;
 use backend\models\Lookup;

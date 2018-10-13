@@ -32,8 +32,21 @@ use drodata\widgets\NavBar;
                 'title' => '新建……',
             ],
             'items' => [
+                 ['label' => '产品', 'url' => '/spu/create'],
                  ['label' => '用户', 'url' => '/user/create'],
                  //'<li class="divider"></li>',
+            ],
+        ],
+        [
+            'label' => '产品',
+            'encode' => false,
+            'linkOptions' => [
+            ],
+            'items' => [
+                 ['label' => '产品', 'url' => '/spu/index'],
+                 ['label' => '商品', 'url' => '/sku/index'],
+                 '<li class="divider"></li>',
+                 ['label' => '品牌', 'url' => '/brand/index'],
             ],
         ],
         [

@@ -10,7 +10,11 @@ class CommonForm extends \yii\base\Model
 {
     public $name;
 
+    /* 产品规格下拉菜单 */
+    public $specifications;
+
     const SCENARIO_DEMO = 'demo';
+    const SCENARIO_SPU = 'spu';
 
     /**
      * @inheritdoc
@@ -20,6 +24,9 @@ class CommonForm extends \yii\base\Model
         return [
             [['name'], 'required', 'on' => self::SCENARIO_DEMO],
             [['name'], 'validateAmount', 'on' => self::SCENARIO_DEMO],
+
+            [['specifications'], 'required', 'on' => self::SCENARIO_SPU],
+
         ];
     }
     /**
@@ -36,6 +43,7 @@ class CommonForm extends \yii\base\Model
     {
         return [
             'name' => '姓名',
+            'specifications' => '产品规格',
         ];
     }
 }

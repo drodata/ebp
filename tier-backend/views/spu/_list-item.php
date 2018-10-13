@@ -1,10 +1,10 @@
 <?php
 
-use drodata\helpers\Html;
-use backend\models\Lookup;
-
 /* @var $this yii\web\View */
 /* @var $model backend\models\Spu */
+
+use drodata\helpers\Html;
+use backend\models\Lookup;
 ?>
 
 <table class="table table-bordered">

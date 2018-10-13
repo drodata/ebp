@@ -1,7 +1,5 @@
 <?php
 
-/* action buttons in detail view on Mobile */
-
 /* @var $this yii\web\View */
 /* @var $model backend\models\Spu */
 ?>

@@ -1,12 +1,12 @@
 <?php
 
-use yii\grid\GridView;
-use drodata\helpers\Html;
-use backend\models\Lookup;
-
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\SkuSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+
+use yii\grid\GridView;
+use drodata\helpers\Html;
+use backend\models\Lookup;
 
 /**
  * 借助 'caption' 属性显示筛选数据累计金额
@@ -29,22 +29,7 @@ echo GridView::widget([
         'id',
         'spu_id',
         'name',
-        [
-            'attribute' => 'status',
-            'filter' => Lookup::items('sku-status'),
-            'format' => 'raw',
-            'value' => function ($model, $key, $index, $column) {
-                return $model->lookup('status');
-            },
-        ],
-        [
-            'attribute' => 'visible',
-            'filter' => Lookup::items('boolean'),
-            'format' => 'raw',
-            'value' => function ($model, $key, $index, $column) {
-                return $model->lookup('visible');
-            },
-        ],
+        'status',
         [
             'attribute' => 'stock',
             'format' => 'integer',

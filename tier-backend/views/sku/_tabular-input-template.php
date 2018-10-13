@@ -1,5 +1,5 @@
 <form id="dummy-form" action="/gii/crud" method="post">
-<input type="hidden" name="_csrf" value="0MJHiRCmae8IAPOuj27mOHstqZR8dPJjZbujdrk0RfC-iTC-V54unHtVgPzFAolfPnnG1z0xw04R38pClBkakw=="></form>
+<input type="hidden" name="_csrf" value="QyqvUTrYzENkNp5RzrYbNBubJOQq1GQggwfAKzCO9vEtYdhmfeCLMBdj7QOE2nRTXs9Lp2uRVQ33Y6kfHaOpkg=="></form>
 <div class="hide">
     <div class="tabularRow">
         <table><tbody>

@@ -273,6 +273,17 @@ class Property extends \drodata\db\ActiveRecord
     }
 
     /**
+     * 获取商品属性所有规格 ids
+     *
+     * @return array
+     */
+    public function getSpecificationIds()
+    {
+        $query = $this->getSpecifications()->orderBy('taxonomy_id ASC');
+        return ArrayHelper::getColumn($query->asArray()->all(), 'taxonomy_id');
+    }
+
+    /**
      * @return User|null
     public function getCreator()
     {
@@ -312,6 +323,30 @@ class Property extends \drodata\db\ActiveRecord
      */
 
     // ==== getters end ====
+
+    /**
+     * 获取 spu_id 值为 $spuId, taxonomy_id 为 $taxonomyId 的记录, 若没有新建
+     *
+     * @return \backend\models\Property 记录
+     */
+    public static function fetch($spuId, $taxonomyId)
+    {
+        $model = static::findOne([
+            'spu_id' => $spuId,
+            'taxonomy_id' => $taxonomyId,
+        ]);
+        if (empty($model)) {
+            $model = new Property([
+                'spu_id' => $spuId,
+                'taxonomy_id' => $taxonomyId,
+            ]);
+            if (!$model->save()) {
+                throw new \yii\db\Exception($model->stringifyErrors());
+            }
+        }
+
+        return $model;
+    }
 
     /**
      * CODE TEMPLATE

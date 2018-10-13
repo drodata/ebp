@@ -1,12 +1,12 @@
 <?php
 
-use yii\bootstrap\ActiveForm;
-use drodata\helpers\Html;
-use backend\models\Lookup;
-
 /* @var $this yii\web\View */
 /* @var $model backend\models\SpuSearch */
 /* @var $form yii\widgets\ActiveForm */
+
+use yii\bootstrap\ActiveForm;
+use drodata\helpers\Html;
+use backend\models\Lookup;
 ?>
 
 <?php $form = ActiveForm::begin([

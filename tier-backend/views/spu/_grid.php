@@ -1,12 +1,12 @@
 <?php
 
-use yii\grid\GridView;
-use drodata\helpers\Html;
-use backend\models\Lookup;
-
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\SpuSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+
+use yii\grid\GridView;
+use drodata\helpers\Html;
+use backend\models\Lookup;
 
 /**
  * 借助 'caption' 属性显示筛选数据累计金额
@@ -45,14 +45,6 @@ echo GridView::widget([
         ],
         'name',
         [
-            'attribute' => 'status',
-            'filter' => Lookup::items('spu-status'),
-            'format' => 'raw',
-            'value' => function ($model, $key, $index, $column) {
-                return $model->lookup('status');
-            },
-        ],
-        [
             'attribute' => 'visible',
             'filter' => Lookup::items('boolean'),
             'format' => 'raw',
@@ -65,7 +57,7 @@ echo GridView::widget([
         'introduction',
         [
             'class' => 'drodata\grid\ActionColumn',
-            'template' => '{view} {update} {delete}',
+            'template' => '{view} {update} {adjust-specification} {delete}',
             'contentOptions' => [
                 'style' => 'min-width:120px',
             ],
@@ -75,6 +67,9 @@ echo GridView::widget([
                 },
                 'update' => function ($url, $model, $key) {
                     return $model->actionLink('update');
+                },
+                'adjust-specification' => function ($url, $model, $key) {
+                    return $model->actionLink('adjust-specification');
                 },
                 'delete' => function ($url, $model, $key) {
                     return $model->actionLink('delete');

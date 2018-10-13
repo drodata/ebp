@@ -1,12 +1,12 @@
 <?php
 
+/* @var $this yii\web\View */
+/* @var $model backend\models\Sku */
+
 use yii\bootstrap\Modal;
 use drodata\helpers\Html;
 use drodata\widgets\Box;
 use backend\models\Lookup;
-
-/* @var $this yii\web\View */
-/* @var $model backend\models\Sku */
 
 Modal::begin([
     'id' => 'view-modal',

@@ -1,12 +1,12 @@
 <?php
 
+/* @var $this yii\web\View */
+/* @var $model backend\models\Spu */
+
 use yii\widgets\DetailView;
 use drodata\helpers\Html;
 use drodata\widgets\Box;
 use common\models\Lookup;
-
-/* @var $this yii\web\View */
-/* @var $model backend\models\Spu */
 
 $this->title = '产品详情';
 $this->params = [

@@ -1,13 +1,13 @@
 <?php
 
+/* @var $this yii\web\View */
+/* @var $model backend\models\Sku */
+/* @var $form yii\bootstrap\ActiveForm */
+
 use drodata\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use backend\models\Lookup;
 use kartik\select2\Select2;
-
-/* @var $this yii\web\View */
-/* @var $model backend\models\Sku */
-/* @var $form yii\bootstrap\ActiveForm */
 
 /*
 $js = <<<JS

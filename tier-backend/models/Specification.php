@@ -298,6 +298,40 @@ class Specification extends \drodata\db\ActiveRecord
     // ==== getters end ====
 
     /**
+     * 获取 property_id 值为 $propertyId, taxonomy_id 为 $taxonomyId 的记录, 若没有新建
+     *
+     * @return \backend\models\Specification 记录
+     */
+    public static function fetch($propertyId, $taxonomyId)
+    {
+        $model = static::findOne([
+            'property_id' => $propertyId,
+            'taxonomy_id' => $taxonomyId,
+        ]);
+        if (empty($model)) {
+            $model = new Specification([
+                'property_id' => $propertyId,
+                'taxonomy_id' => $taxonomyId,
+            ]);
+            if (!$model->save()) {
+                throw new \yii\db\Exception($model->stringifyErrors());
+            }
+        }
+
+        return $model;
+    }
+    /**
+     * 根据 specification ids 组装 sku 规格部分
+     */
+    public static function assembleTail($ids)
+    {
+        $taxonomyIds = ArrayHelper::getColumn(static::find()->where(['id' => $ids])->asArray()->all(), 'taxonomy_id');
+        $names = ArrayHelper::getColumn(Taxonomy::find()->where(['id' => $taxonomyIds])->asArray()->all(), 'name');
+
+        return ' ' . implode(' ', $names);
+    }
+
+    /**
      * CODE TEMPLATE
      *
     public function sign()

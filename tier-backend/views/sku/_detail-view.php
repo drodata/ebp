@@ -1,10 +1,10 @@
 <?php
 
+/* @var $model backend\models\Sku */
+
 use yii\widgets\DetailView;
 use drodata\helpers\Html;
 use backend\models\Lookup;
-
-/* @var $model backend\models\Sku */
 
 echo DetailView::widget([
     'model' => $model,

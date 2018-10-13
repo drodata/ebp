@@ -1,13 +1,10 @@
 <?php
-/**
- * detail view on non-mobile device
- */
+
+/* @var $model backend\models\Spu */
 
 use yii\widgets\DetailView;
 use drodata\helpers\Html;
 use backend\models\Lookup;
-
-/* @var $model backend\models\Spu */
 
 echo DetailView::widget([
     'model' => $model,

@@ -1,7 +1,5 @@
 <?php
 
-/* action buttons in detail view */
-
 /* @var $this yii\web\View */
 /* @var $model backend\models\Sku */
 ?>

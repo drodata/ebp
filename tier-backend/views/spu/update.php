@@ -1,10 +1,10 @@
 <?php
 
-use drodata\helpers\Html;
-use drodata\widgets\Box;
-
 /* @var $this yii\web\View */
 /* @var $model backend\models\Spu */
+
+use drodata\helpers\Html;
+use drodata\widgets\Box;
 
 $this->title = '修改产品';
 $this->params = [

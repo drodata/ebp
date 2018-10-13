@@ -1,12 +1,12 @@
 <?php
 
+/* @var $this yii\web\View */
+/* @var $model backend\models\Sku */
+
 use yii\widgets\DetailView;
 use drodata\helpers\Html;
 use drodata\widgets\Box;
 use common\models\Lookup;
-
-/* @var $this yii\web\View */
-/* @var $model backend\models\Sku */
 
 $this->title = '商品详情';
 $this->params = [

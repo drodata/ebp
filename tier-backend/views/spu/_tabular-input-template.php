@@ -1,26 +1,56 @@
-<form id="dummy-form" action="/gii/crud" method="post">
-<input type="hidden" name="_csrf" value="JVs2UECQ-czlKrYgXZG96JdSSExeddRm5FZcSXLEDXlLEEFnB6i-v5Z_xXIX_dKP0gYnDx8w5UuQMjV9X-lSGg=="></form>
+<?php
+
+/**
+ * AJAX tabular input template
+ */
+use yii\bootstrap\ActiveForm;
+use drodata\helpers\Html;
+use backend\models\Lookup;
+use backend\models\CommonForm;
+use kartik\select2\Select2;
+
+$item = new CommonForm();
+$indexToken = 'indextoken';
+$js = <<<JS
+$('form#dummy-form').remove();
+JS;
+$this->registerJs($js);
+
+$btn = Html::button(Html::icon('plus'), [
+    'class' => 'btn btn-default modal-create-taxonomy', 
+    'data' => [
+        'type' => 'spu-specification',
+        'taxonomy' => [
+            'parent_id' => 'PARENT',
+            'hide_parent' => 1,
+        ],
+        'toggle' => 'tooltip',
+        'title' => '新建', 
+    ],
+]);
+$template = <<<TPL
+{label}
+<div class="input-group">
+    {input}
+    <div class="input-group-btn"> 
+    $btn
+    </div>
+</div>
+{hint}
+{error}
+TPL;
+?>
+<?php $form = ActiveForm::begin(['id' => 'dummy-form']); ?>
+<?php $form = ActiveForm::end(); ?>
+
 <div class="hide">
-    <div class="tabularRow">
-        <table><tbody>
-            <tr class="itemRow" data-key="drodata">
-                <td>
-                    <div class="form-group field-lookup-drodata-id">
- 
-<select id="lookup-drodata-id" class="form-control" name="Lookup[drodata][id]">
-<option value=""></option>
-</select>
-<p class="help-block help-block-error"></p>
-</div>                </td>
-                <td>
-                    <div class="form-group field-lookup-drodata-name required">
- 
-<div class="input-group"><input type="number" id="lookup-drodata-name" class="form-control" name="Lookup[drodata][name]" placeholder=""><div class="input-group-addon">kg</div></div>
-<p class="help-block help-block-error"></p>
-</div>                </td>
-                <td class="text-right">
-                    <button type="button" class="btn btn-sm btn-danger deleteRow">删除</button>                </td>
-            </tr>
-        </tbody></table>
+    <div class="spu-specification-tpl">
+        <?= $form->field($item, "[$indexToken]specifications", [
+            'template' => $template,
+        ])->label("LABEL")->dropDownList([], [
+            'class' => 'spu-specification',
+            'placeholder' => '请选择LABEL',
+            'multiple' => true
+        ]) ?>
     </div>
 </div>

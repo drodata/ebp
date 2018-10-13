@@ -10,8 +10,6 @@ use yii\data\ActiveDataProvider;
 use yii\db\Exception;
 use drodata\helpers\Html;
 use drodata\helpers\Utility;
-use drodata\behaviors\TimestampBehavior;
-use drodata\behaviors\BlameableBehavior;
 use drodata\behaviors\LookupBehavior;
 
 /**
@@ -33,10 +31,8 @@ use drodata\behaviors\LookupBehavior;
  */
 class Spu extends \drodata\db\ActiveRecord
 {
-    // const STATUS_ = 1;
-    // const SCENARIO_ = '';
-    // 单独上传附件事件
-    const EVENT_UPLOAD = 'upload';
+    const MODE_SIMPLE = 1;
+    const MODE_STRICT = 2;
 
     public function init()
     {
@@ -81,11 +77,9 @@ class Spu extends \drodata\db\ActiveRecord
             'lookup' => [
                 'class' => LookupBehavior::className(),
                 'labelMap' => [
-                    /*
-                    'status' => ['status', [
-                        1 => 'danger',
-                    ]],
-                    */
+                    'mode' => ['spu-mode', [ ]],
+                    'type' => ['spu-type', [ ]],
+                    'visible' => ['boolean', [ ]],
                 ],
             ],
         ];
@@ -93,32 +87,12 @@ class Spu extends \drodata\db\ActiveRecord
 
     /**
      * @inheritdoc
-     *
-    public function fields()
-    {
-        $fields = parent::fields();
-        
-        // 删除涉及敏感信息的字段
-        //unset($fields['auth_key']);
-        
-        // 增加自定义字段
-        return ArrayHelper::merge($fields, [
-            'time' => function () {
-                return $this->readableCreateTime;
-            },
-            'creator' => function () {
-                return $this->readableCreator;
-            },
-        ]);
-    }
-    */
-
-    /**
-     * @inheritdoc
      */
     public function rules()
     {
         return [
+            [['status'], 'default', 'value' => 1],
+
             [['mode', 'type', 'name', 'status'], 'required'],
             [['mode', 'type', 'status', 'visible', 'brand_id'], 'integer'],
             [['introduction'], 'string'],
@@ -212,6 +186,19 @@ class Spu extends \drodata\db\ActiveRecord
                     ], $configs)
                 );
                 break;
+            case 'adjust-specification':
+                return Html::actionLink(
+                    [$route, 'id' => $this->id],
+                    ArrayHelper::merge([
+                        'type' => $type,
+                        'title' => '调整规格',
+                        'icon' => 'list',
+                        'visible' => $visible,
+                        'disabled' => $hint,
+                        'disabledHint' => $hint,
+                    ], $configs)
+                );
+                break;
             case 'delete':
                 return Html::actionLink(
                     [$route, 'id' => $this->id],
@@ -254,6 +241,11 @@ class Spu extends \drodata\db\ActiveRecord
 
                 if (0) {
                     $hint = 'already paid';
+                }
+                break;
+            case 'adjust-specification':
+                if ($this->isSimple) {
+                    $hint = '仅针对严格模式产品';
                 }
                 break;
             case 'delete':
@@ -333,6 +325,22 @@ class Spu extends \drodata\db\ActiveRecord
     }
      */
 
+    /**
+     * 判断产品是否为简单模式
+     * @return bool
+     */
+    public function getIsSimple()
+    {
+        return $this->mode == self::MODE_SIMPLE;
+    }
+    /**
+     * 判断产品是否为复杂模式
+     * @return bool
+     */
+    public function getIsStrict()
+    {
+        return $this->mode == self::MODE_STRICT;
+    }
     // ==== getters end ====
 
     /**
@@ -348,54 +356,261 @@ class Spu extends \drodata\db\ActiveRecord
      */
 
     /**
+     * 根据属性名到规格名的映射
+       
+       ```
+       [
+           3 => [5, 7],
+           4 => [8, 9],
+       ]
+       ```
+       
+       to
+       
+       ```
+       [
+           [5, 8],
+           [5, 9],
+           [7, 8],
+           [7, 9],
+       ]
+       ```
+     */
+    public static function buildArray($map)
+    {
+        $ids = [];
+        foreach ($map as $property => $specifications) {
+            $ids[] = $specifications;
+        }
+
+        $base = $ids[0];
+        for ($i = 1; $i < count($ids); $i++) {
+            $base = static::combine($base, $ids[$i]);
+        }
+
+        $final = [];
+        foreach ($base as $chain) {
+            $temp = explode('_', $chain);
+            $final[] = array_map('intval', $temp); 
+        }
+
+        return $final;
+    }
+    /**
+     * @param array $master
+     * @param array $slave
+     */
+    public static function combine($masterItems, $slaveItems)
+    {
+        $slices = [];
+        foreach ($masterItems as $masterItem) {
+            foreach ($slaveItems as $slaveItem) {
+                $slices[] = $masterItem . '_' . $slaveItem;
+            }
+        } 
+        return $slices;
+    }
+
+    /**
      * AJAX 提交表单逻辑代码
      *
+     */
     public static function ajaxSubmit($post)
     {
         $d['status'] = true;
 
-        if (empty($post['Spu']['id'])) {
-            $model = new Spu();
-        } else {
-            $model = Spu::findOne($post['Spu']['id']);
-        }
+        $model = empty($post['Spu']['id']) ? new Spu() : Spu::findOne($post['Spu']['id']);
         $model->load($post);
 
-        // items
-        $items = [];
-        foreach ($post['PurchaseItem'] as $index => $item) {
-            $items[$index] = new PurchaseItem();
+        $properties = $post['properties'];
+
+        // 根据属性 ids 判断模式
+        $model->mode = empty($properties) ? self::MODE_SIMPLE : self::MODE_STRICT;
+
+        $d['status'] = $model->validate() && $d['status'];
+        if (!$model->validate()) {
+            $d['errors']['spu'] = $model->getErrors();
         }
-        PurchaseItem::loadMultiple($items, $post);
-        foreach ($post['PurchaseItem'] as $index => $item) {
-            $d['status'] = $items[$index]->validate() && $d['status'];
-            if (!$items[$index]->validate()) {
-                $key = "purchaseitem-$index";
-                $d['errors'][$key] = $items[$index]->getErrors();
+
+        // 验证规格
+        if (!empty($properties)) {
+            $items = [];
+            foreach ($post['CommonForm'] as $index => $item) {
+                $items[$index] = new CommonForm(['scenario' => CommonForm::SCENARIO_SPU]);
+            }
+            CommonForm::loadMultiple($items, $post);
+            foreach ($post['CommonForm'] as $index => $item) {
+                $d['status'] = $items[$index]->validate() && $d['status'];
+                if (!$items[$index]->validate()) {
+                    $key = "commonform-$index";
+                    $d['errors'][$key] = $items[$index]->getErrors();
+                }
             }
         }
 
         // all data is safe, start to submit 
         if ($d['status']) {
-            // 根据需要调整如 status 列值
-            $model->on(self::EVENT_AFTER_INSERT, [$model, 'insertItems'], ['items' => $items]);
+            if (empty($properties)) {
+                // simple spu mode
+                $model->on(self::EVENT_AFTER_INSERT, [$model, 'insertSku']);
+            } else {
+                // strict spu mode
+                $slices = [];
+                foreach ($items as $index => $item) {
+                    $slices[$index] = $item->specifications;
+                }
+                $map = static::buildArray($slices);
 
-            $model->on(self::EVENT_BEFORE_UPDATE, [$model, 'deleteItems']);
-            $model->on(self::EVENT_AFTER_UPDATE, [$model, 'insertItems'], ['items' => $items]);
+                $model->on(self::EVENT_AFTER_INSERT, [$model, 'insertSkus'], ['map' => $map]);
+            }
 
             if (!$model->save()) {
-                throw new Exception($model->stringifyErrors());
+                throw new \yii\db\Exception($model->stringifyErrors());
             }
-            
             $d['message'] = Html::tag('span', Html::icon('check') . '已保存', [
                 'class' => 'text-success',
             ]);
-            $d['redirectUrl'] = Url::to(['/purchase/index']);
+            $d['redirectUrl'] = Url::to(['/sku/index']);
         }
 
         return $d;
+
     }
-    */
+
+    /**
+     * 调整产品规格（不改变产品属性的前提下）
+     */
+    public function adjustSpecification($generalForms)
+    {
+        $slices = [];
+        foreach ($generalForms as $index => $item) {
+            $slices[$index] = $item->specifications;
+        }
+        $map = static::buildArray($slices);
+        $oldMap = $this->getOldMap();
+
+        $newMap = [];
+        foreach ($map as $ids) {
+            if (!in_array($ids, $oldMap)) {
+                $newMap[] = $ids;
+            }
+        }
+
+        $event = new \yii\base\Event([
+            'data' => [
+                'map' => $newMap,
+            ],
+        ]);
+
+        $this->insertSkus($event);
+    }
+
+    /**
+     * 返回旧的规格映射
+     */
+    protected function getOldMap()
+    {
+        $slices = [];
+
+        foreach ($this->properties as $prop) {
+            $generalForms[$prop->taxonomy_id] = $generalForm;
+            $slices[$prop->taxonomy_id] = $prop->specificationIds;
+        }
+
+        // 确保严格按照 taxonomy 排序
+        ksort($slices);
+        
+        return static::buildArray($slices);
+    }
+
+    /**
+     * simple mode 下保存 sku
+     */
+    public function insertSku($event)
+    {
+        $sku = new Sku([
+            'spu_id' => $this->id,
+            'name' => $this->name,
+        ]);
+        if (!$sku->save()) {
+            throw new \yii\db\Exception('Failed to insert.');
+        }
+    }
+
+    /**
+     * 写入复杂模式下的 skus
+     *
+     * @param array $event->data
+     * - 'map': array, 
+     *
+     * ```
+     * [
+     *     [3, 5],
+     *     [3, 6],
+     *     [4, 5],
+     *     [4, 6],
+     * ]
+     * ```
+     * 
+     * 数组的个数表示应该创建几个 skus, 每个元素又是数组，里面包含 taxonomy ids, 即属性值的 ids
+     */
+    public function insertSkus($event)
+    {
+        $map = $event->data['map'];
+
+        $map = static::nameIds2valueIds($this->id, $map);
+
+        for ($i = 0; $i < count($map); $i++) {
+            $sku = new Sku([
+                'spu_id' => $this->id,
+            ]);
+            $sku->name = Specification::assembleTail($map[$i]) . $this->name;
+            if (!$sku->save()) {
+                throw new \yii\db\Exception('Failed to insert.');
+            }
+
+            foreach ($map[$i] as $specificationId) {
+                $skuSpec = new SkuSpecification([
+                    'sku_id' => $sku->id,
+                    'specification_id' => $specificationId,
+                ]);
+                if (!$skuSpec->save()) {
+                    throw new \yii\db\Exception('Failed to insert.');
+                }
+            }
+        }
+    }
+
+    /**
+     * 规格名称 ids (taxonomy) 转换成 规格值 ids (specification)
+     *
+     * ```
+     * [
+     *     [3, 5],
+     *     [3, 6],
+     *     [4, 5],
+     *     [4, 6],
+     * ]
+     * ```
+     * 
+     * 数组的个数表示应该创建几个 skus, 每个元素又是数组，里面包含 specification ids, 
+     */
+    public static function nameIds2valueIds($spuId, $map)
+    {
+        $newMap = [];
+        foreach ($map as $id => $specNameIds) {
+            $valueIds = [];
+            foreach ($specNameIds as $specNameId) {
+                $specName = Taxonomy::findOne($specNameId);
+                $property = Property::fetch($spuId, $specName->parent_id);
+                $spec = Specification::fetch($property->id, $specName->id);
+                $valueIds[] = $spec->id;
+            }
+            $newMap[] = $valueIds;
+        }
+
+        return $newMap;
+    }
 
     // ==== event-handlers begin ====
 

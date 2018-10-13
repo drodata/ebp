@@ -1,14 +1,15 @@
 <?php
 
+/* @var $this yii\web\View */
+/* @var $searchModel backend\models\SkuSearch */
+/* @var $dataProvider yii\data\ActiveDataProvider */
+
 use yii\widgets\ListView;
 use drodata\helpers\Html;
 use drodata\widgets\Box;
 use common\models\Lookup;
 use yii\grid\GridView;
 
-/* @var $this yii\web\View */
-/* @var $searchModel backend\models\SkuSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = "商品";
 $this->params = [
