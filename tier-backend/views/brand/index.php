@@ -1,7 +1,7 @@
 <?php
 
 /* @var $this yii\web\View */
-/* @var $searchModel backend\models\SkuSearch */
+/* @var $searchModel backend\models\BrandSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 use yii\widgets\ListView;
@@ -11,16 +11,23 @@ use common\models\Lookup;
 use yii\grid\GridView;
 
 
-$this->title = "商品";
+$this->title = "品牌";
 $this->params = [
     'title' => $this->title,
     'subtitle' => '',
     'breadcrumbs' => [
-        ['label' => "商品", 'url' => 'index'],
+        ['label' => "品牌", 'url' => 'index'],
         '管理',
     ],
     'buttons' => [
-        Html::actionLink('/sku/modal-search', [
+        Html::actionLink('/brand/create', [
+            'type' => 'button',
+            'title' => '新建品牌',
+            'icon' => 'plus',
+            'color' => 'success',
+            'visible' => true, //Yii::$app->user->can(''),
+        ]),
+        Html::actionLink('/brand/modal-search', [
             'type' => 'button',
             'title' => '高级搜索',
             'icon' => 'search',
@@ -39,7 +46,7 @@ $this->params = [
     ],
 ];
 ?>
-<div class="row sku-index">
+<div class="row brand-index">
     <div class="col-xs-12">
         <?= $this->render('@drodata/views/_alert') ?>
         <?php Box::begin([

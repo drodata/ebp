@@ -60,11 +60,7 @@ class Brand extends \drodata\db\ActiveRecord
             'lookup' => [
                 'class' => LookupBehavior::className(),
                 'labelMap' => [
-                    /*
-                    'status' => ['status', [
-                        1 => 'danger',
-                    ]],
-                    */
+                    'visible' => ['boolean', []],
                 ],
             ],
         ];
@@ -126,104 +122,67 @@ class Brand extends \drodata\db\ActiveRecord
     }
 
     /**
-     * Render a specified action link, which is usually used in 
-     * GridView or ListView.
+     * 反回操作链接
      *
      * @param string $action action name
-     * @param string $type link type, 'icon' and 'button' are available,
-     * the former is used in action column in grid view, while the latter
-     * is use in list view.
-     * @param array $configs 动态配置数组。内容参见 Html::actionLink(). 例如 'view' 动作默认的 title 为 '详情',
-     * 我想改成 "查看订单": `Html::actionLink('view', 'icon', ['title' => '查看订单'])
+     * @param array $configs 参考 Html::actionLink()
      * @return mixed the link html content
      */
-    public function actionLink($action, $type = 'icon', $configs = [])
+    public function actionLink($action, $configs = [])
     {
-        $route = '/brand/' . $action;
-        list($visible, $hint, $confirm) = $this->getActionOptions($action);
+        list($route, $options) = $this->getActionOptions($action);
 
-        switch ($action) {
-            case 'view':
-                return Html::actionLink(
-                    [$route, 'id' => $this->id],
-                    ArrayHelper::merge([
-                        'type' => $type,
-                        'title' => '详情',
-                        'icon' => 'eye',
-                        // comment the next line if you don't want to view model in modal.
-                        'class' => 'modal-view',
-                    ], $configs)
-                );
-                break;
-            case 'update':
-                return Html::actionLink(
-                    [$route, 'id' => $this->id],
-                    ArrayHelper::merge([
-                        'type' => $type,
-                        'title' => '修改',
-                        'icon' => 'pencil',
-                        'visible' => $visible,
-                        'disabled' => $hint,
-                        'disabledHint' => $hint,
-                    ], $configs)
-                );
-                break;
-            case 'delete':
-                return Html::actionLink(
-                    [$route, 'id' => $this->id],
-                    ArrayHelper::merge([
-                        'type' => $type,
-                        'title' => '删除',
-                        'icon' => 'trash',
-                        'color' => 'danger',
-                        'data' => [
-                            'method' => 'post',
-                            'confirm' => $confirm,
-                        ],
-                        'visible' => $visible,
-                        'disabled' => $hint,
-                        'disabledHint' => $hint,
-                    ], $configs)
-                );
-                break;
-        }
+        return Html::actionLink($route, ArrayHelper::merge($options, $configs));
     }
 
     /**
-     * 返回 $action 常见的选项
+     * 返回 actionLink() 核心属性
      *
      * @param string $action 对应 actionLink() 中 $action 值
      * @see actionLink()
      *
-     * @return array 三个元素依次表示：按钮可见性、禁用提示和确认提示
+     * @return array 两个个元素依次表示：action route, action link options
      *
      */
-    public function getActionOptions($action)
+    protected function getActionOptions($action)
     {
+        // reset control options
         $visible = true;
-        $hint = null;
+        $disabledHint = null;
         $confirm = null;
+        $route = ["/brand/$action", 'id' => $this->id];
 
         switch ($action) {
             case 'update':
-                $visible = $visible && true;
-
-                if (0) {
-                    $hint = 'already paid';
-                }
+                $options = [
+                    'title' => '修改',
+                    'icon' => 'pencil',
+                ];
                 break;
+
             case 'delete':
-                $visible = $visible && true;
+                $options = [
+                    'title' => '删除',
+                    'icon' => 'trash',
+                    'color' => 'danger',
+                    'data' => [
+                        'method' => 'post',
+                        'confirm' => '确定要执行删除操作吗？',
+                    ],
+                ];
+                break;
 
-                if (false) {
-                    $hint = 'already paid';
-                }
-
-                $confirm = '请再次确认';
+            default:
                 break;
         }
 
-        return [$visible, $hint, $confirm];
+        // combine control options with common options
+        return [$route, ArrayHelper::merge($options, [
+            'type' => 'icon',
+            'visible' => $visible,
+            'disabled' => $disabledHint,
+            'disabledHint' => $disabledHint,
+        ])];
     }
 
     // ==== getters start ====
