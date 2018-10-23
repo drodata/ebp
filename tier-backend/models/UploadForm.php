@@ -6,10 +6,10 @@ use Yii;
 use yii\base\Model;
 use yii\base\InvalidConfigException;
 
-class UploadForm extends \dro\attachment\UploadForm
+class UploadForm extends Model
 {
-    public $modelClass = 'backend\models\Attachment';
-    public $modelFkName = 'attachment_id';
+    public $key; // 各个模型的主键值
+    public $files;
 
 	const SCENARIO_SPU_IMAGE = 'spu-image';
 
@@ -47,12 +47,55 @@ class UploadForm extends \dro\attachment\UploadForm
         ];
     }
 
-    public function getUploadParams()
+	public function upload()
+	{
+        if (!$this->validate()) {
+            return false;
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $this->uploadAttachment();
+            $transaction->commit();
+            return true;
+        } catch(\Exception $e) {
+            $transaction->rollBack();
+            throw $e;
+        }
+    }
+
+    protected function uploadAttachment()
+    {
+        list($attributes, $junctionModelClass, $junctionAttribute) = $this->getUploadParams();
+
+        foreach ($this->files as $file) {
+            $media = new Attachment($attributes);
+            $media->name = $file->name;
+
+            $media->storeFile($file);
+
+            if (!$media->save()) {
+                throw new \yii\db\Exception($media->stringifyErrors());
+            }
+
+            $junction = new $junctionModelClass([
+                $junctionAttribute => $this->key,
+                'attachment_id' => $media->id,
+            ]);
+
+            if (!$junction->save()) {
+                throw new \yii\db\Exception($junction->stringifyErrors());
+            }
+        }
+    }
+
+    protected function getUploadParams()
     {
         switch ($this->scenario) {
             case self::SCENARIO_SPU_IMAGE:
                 $attributes = [
                     'format' => Attachment::FORMAT_IMG,
+                    'category' => Attachment::CATEGORY_SPU_IMAGE,
                 ];
                 $junctionModelClass = '\backend\models\SpuImage';
                 $junctionAttribute = 'spu_id';

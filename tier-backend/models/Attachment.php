@@ -15,25 +15,31 @@ use yii\imagine\Image as Imagine;
  * This is the model class for table "attachment".
  * 
  * @property integer $id
+ * @property string $category
  * @property string $format
  * @property string $path
  * @property string $name
  * @property integer $visible
  *
- * @property SpuImage[] $spuImages
- * @property Spu[] $spus
  */
 class Attachment extends \drodata\db\ActiveRecord
 {
     private $_mediaRoot;
     private $_mediaWeb;
+
     const FORMAT_IMG = 'img';
     const FORMAT_PNG = 'png';
+
+    const CATEGORY_SPU_IMAGE = 'spu-image';
+
     public function init()
     {
         parent::init();
         $this->_mediaRoot = Yii::getAlias('@static');
         $this->_mediaWeb = Yii::getAlias('@staticweb');
+
+        $this->on(self::EVENT_BEFORE_DELETE, [$this, 'deleteJunctionRecords']);
+        $this->on(self::EVENT_AFTER_DELETE, [$this, 'deleteFile']);
     }
 
     /**
@@ -70,10 +76,10 @@ class Attachment extends \drodata\db\ActiveRecord
     public function rules()
     {
         return [
-            [['format', 'path'], 'required'],
+            [['category', 'format', 'path'], 'required'],
             [['visible'], 'integer'],
             [['format'], 'string', 'max' => 10],
-            [['path'], 'string', 'max' => 50],
+            [['category', 'path'], 'string', 'max' => 50],
             [['name'], 'string', 'max' => 100],
         ];
     }
@@ -85,6 +91,7 @@ class Attachment extends \drodata\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'category' => '分类',
             'format' => '文件格式',
             'path' => 'hashed 相对路径',
             'name' => '原始文件名',
@@ -159,18 +166,15 @@ class Attachment extends \drodata\db\ActiveRecord
     // ==== getters start ====
 
     /**
-     * @return \yii\db\ActiveQuery
+     * 获取关联表记录
      */
-    public function getSpuImages()
+    public function getJunctionRecords()
     {
-        return $this->hasMany(SpuImage::className(), ['attachment_id' => 'id']);
-    }
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSpus()
-    {
-        return $this->hasMany(Spu::className(), ['id' => 'spu_id'])->viaTable('spu_image', ['attachment_id' => 'id']);
+        switch ($this->category) {
+            case self::CATEGORY_SPU_IMAGE:
+                return $this->hasMany(SpuImage::className(), ['attachment_id' => 'id']);
+                break;
+        }
     }
 
     public function setMediaRoot($name)
@@ -310,4 +314,37 @@ class Attachment extends \drodata\db\ActiveRecord
         }
     }
 
+    /**
+     * 删除关联表中的记录
+     *
+     * 由 self::EVENT_BEFORE_DELETE 触发
+     */
+    public function deleteJunctionRecords($event)
+    {
+        $records = $this->junctionRecords;
+
+        if ($records) {
+            foreach ($records as $record) {
+                if (!$record->delete()) {
+                    throw new \yii\db\Exception('Failed to flush.');
+                }
+            }
+        }
+    }
+
+    /**
+     * 删除实际的文件
+     *
+     * Trigger by Image::EVENT_AFTER_DELETE
+     */
+    public function deleteFile($event)
+    {
+        $sizes = ['o', 'l', 's', 't'];
+        foreach ($sizes as $size) {
+            $path = $this->getPath($size);
+            if (file_exists($path)) {
+                unlink($path);
+            }
+        }
+    }
 }

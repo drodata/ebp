@@ -32,6 +32,10 @@ return [
             'class' => 'drodata\controllers\TaxonomyController',
             'name' => '商品规格',
         ],
+        'attachment' => [
+            'class' => 'dro\attachment\AttachmentController',
+            'modelClass' => 'backend\models\Attachment',
+        ],
     ],
     'controllerNamespace' => 'backend\controllers',
     'defaultRoute' => 'dashboard/index',
