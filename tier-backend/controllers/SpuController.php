@@ -24,6 +24,20 @@ class SpuController extends Controller
     /**
      * @inheritdoc
      */
+    public function actions()
+    {
+        return [
+            'image' => [
+                'class' => 'dro\attachment\UploadAction',
+                'modelClass' => 'backend\models\Spu',
+                'uploadFormClass' => 'backend\models\UploadForm',
+            ],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function behaviors()
     {
         return [

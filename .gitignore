@@ -32,10 +32,12 @@ phpunit.phar
 # vagrant runtime
 /.vagrant
 
-vim-session
 *.mwb.bak
 yat.sql
 yat-bak.sql
+
+# static files
+static
 
 backend/views/test/index.php
 

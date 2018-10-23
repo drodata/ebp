@@ -373,12 +373,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/drodata/yii2-attachment.git",
-                "reference": "8ef3791c634427c880a464313f3b0415e4d63d5c"
+                "reference": "2d151e77a47cca707cab84cbf3c10eb9aecf3ee3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drodata/yii2-attachment/zipball/8ef3791c634427c880a464313f3b0415e4d63d5c",
-                "reference": "8ef3791c634427c880a464313f3b0415e4d63d5c",
+                "url": "https://api.github.com/repos/drodata/yii2-attachment/zipball/2d151e77a47cca707cab84cbf3c10eb9aecf3ee3",
+                "reference": "2d151e77a47cca707cab84cbf3c10eb9aecf3ee3",
                 "shasum": ""
             },
             "require": {
@@ -415,7 +415,7 @@
                 "attachment",
                 "yii2"
             ],
-            "time": "2018-10-22T01:27:35+00:00"
+            "time": "2018-10-23T01:22:29+00:00"
         },
         {
             "name": "drodata/yii2-utility",

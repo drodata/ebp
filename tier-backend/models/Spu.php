@@ -144,122 +144,74 @@ class Spu extends \drodata\db\ActiveRecord
     }
 
     /**
-     * Render a specified action link, which is usually used in 
-     * GridView or ListView.
+     * 反回操作链接
      *
      * @param string $action action name
-     * @param string $type link type, 'icon' and 'button' are available,
-     * the former is used in action column in grid view, while the latter
-     * is use in list view.
-     * @param array $configs 动态配置数组。内容参见 Html::actionLink(). 例如 'view' 动作默认的 title 为 '详情',
-     * 我想改成 "查看订单": `Html::actionLink('view', 'icon', ['title' => '查看订单'])
+     * @param array $configs 参考 Html::actionLink()
      * @return mixed the link html content
      */
-    public function actionLink($action, $type = 'icon', $configs = [])
+    public function actionLink($action, $configs = [])
     {
-        $route = '/spu/' . $action;
-        list($visible, $hint, $confirm) = $this->getActionOptions($action);
+        list($route, $options) = $this->getActionOptions($action);
 
-        switch ($action) {
-            case 'view':
-                return Html::actionLink(
-                    [$route, 'id' => $this->id],
-                    ArrayHelper::merge([
-                        'type' => $type,
-                        'title' => '详情',
-                        'icon' => 'eye',
-                        // comment the next line if you don't want to view model in modal.
-                        'class' => 'modal-view',
-                    ], $configs)
-                );
-                break;
-            case 'update':
-                return Html::actionLink(
-                    [$route, 'id' => $this->id],
-                    ArrayHelper::merge([
-                        'type' => $type,
-                        'title' => '修改',
-                        'icon' => 'pencil',
-                        'visible' => $visible,
-                        'disabled' => $hint,
-                        'disabledHint' => $hint,
-                    ], $configs)
-                );
-                break;
-            case 'adjust-specification':
-                return Html::actionLink(
-                    [$route, 'id' => $this->id],
-                    ArrayHelper::merge([
-                        'type' => $type,
-                        'title' => '调整规格',
-                        'icon' => 'list',
-                        'visible' => $visible,
-                        'disabled' => $hint,
-                        'disabledHint' => $hint,
-                    ], $configs)
-                );
-                break;
-            case 'delete':
-                return Html::actionLink(
-                    [$route, 'id' => $this->id],
-                    ArrayHelper::merge([
-                        'type' => $type,
-                        'title' => '删除',
-                        'icon' => 'trash',
-                        'color' => 'danger',
-                        'data' => [
-                            'method' => 'post',
-                            'confirm' => $confirm,
-                        ],
-                        'visible' => $visible,
-                        'disabled' => $hint,
-                        'disabledHint' => $hint,
-                    ], $configs)
-                );
-                break;
-        }
+        return Html::actionLink($route, ArrayHelper::merge($options, $configs));
     }
 
     /**
-     * 返回 $action 常见的选项
+     * 返回 actionLink() 核心属性
      *
      * @param string $action 对应 actionLink() 中 $action 值
      * @see actionLink()
      *
-     * @return array 三个元素依次表示：按钮可见性、禁用提示和确认提示
+     * @return array 两个个元素依次表示：action route, action link options
      *
      */
-    public function getActionOptions($action)
+    protected function getActionOptions($action)
     {
+        // reset control options
         $visible = true;
         $hint = null;
         $confirm = null;
+        $route = ["/spu/$action", 'id' => $this->id];
 
         switch ($action) {
             case 'update':
-                $visible = $visible && true;
+                $options = [
+                    'title' => '修改',
+                    'icon' => 'pencil',
+                ];
+                break;
+            case 'upload-image':
+                $route = ["/spu/image", 'do' => 'create', 'id' => $this->id];
+                $options = [
+                    'title' => '上传图片',
+                    'icon' => 'upload',
+                ];
+                break;
 
-                if (0) {
-                    $hint = 'already paid';
-                }
-                break;
-            case 'adjust-specification':
-                if ($this->isSimple) {
-                    $hint = '仅针对严格模式产品';
-                }
-                break;
             case 'delete':
-                $visible = $visible && true;
+                $options = [
+                    'title' => '删除',
+                    'icon' => 'trash',
+                    'color' => 'danger',
+                    'data' => [
+                        'method' => 'post',
+                        'confirm' => '确定要执行删除操作吗？',
+                    ],
+                ];
+                break;
 
-                if (false) {
-                    $hint = 'already paid';
-                }
-
-                $confirm = '请再次确认';
+            default:
                 break;
         }
 
-        return [$visible, $hint, $confirm];
+        // combine control options with common options
+        return [$route, ArrayHelper::merge($options, [
+            'type' => 'icon',
+            'visible' => $visible,
+            'disabled' => $hint,
+            'disabledHint' => $hint,
+        ])];
     }
 
     // ==== getters start ====
@@ -284,6 +236,14 @@ class Spu extends \drodata\db\ActiveRecord
     public function getBrand()
     {
         return $this->hasOne(Brand::className(), ['id' => 'brand_id']);
+    }
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getImages()
+    {
+        return $this->hasMany(Attachment::className(), ['id' => 'attachment_id'])
+            ->viaTable('{{%spu_image}}', ['spu_id' => 'id']);
     }
 
     /**
@@ -340,6 +300,40 @@ class Spu extends \drodata\db\ActiveRecord
     public function getIsStrict()
     {
         return $this->mode == self::MODE_STRICT;
+    }
+
+    public function getUploadViewParams($action)
+    {
+        switch ($action) {
+            case 'image':
+                return [
+                    'label' => '产品图片',
+                    'subtitle' => $this->name,
+                    'redirectRoute' => ['/spu/image', 'do' => 'manage', 'id' => $this->id],
+                    'navigationLinks' => [
+                        $this->actionLink('upload-image', ['type' => 'button', 'title' => '继续上传图片']),
+                    ],
+                    'dataProvider' => $this->getDataProvider($action),
+                ];
+                break;
+        }
+    }
+    /**
+     * 返回常用的 DP
+     */
+    public function getDataProvider($key)
+    {
+        switch ($key) {
+            case 'image':
+                $query = $this->getImages();
+                break;
+        }
+
+        return new ActiveDataProvider([
+            'query' => $query,
+			'pagination' => false,
+			'sort' => false,
+        ]);
     }
     // ==== getters end ====
 

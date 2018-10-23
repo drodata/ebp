@@ -57,7 +57,7 @@ echo GridView::widget([
         'introduction',
         [
             'class' => 'drodata\grid\ActionColumn',
-            'template' => '{view} {update} {adjust-specification} {delete}',
+            'template' => '{view} {update} {upload-image} {adjust-specification} {delete}',
             'contentOptions' => [
                 'style' => 'min-width:120px',
             ],
@@ -67,6 +67,9 @@ echo GridView::widget([
                 },
                 'update' => function ($url, $model, $key) {
                     return $model->actionLink('update');
+                },
+                'upload-image' => function ($url, $model, $key) {
+                    return $model->actionLink('upload-image');
                 },
                 'adjust-specification' => function ($url, $model, $key) {
                     return $model->actionLink('adjust-specification');
