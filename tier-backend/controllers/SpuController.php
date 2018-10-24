@@ -196,9 +196,14 @@ class SpuController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', '修改已保存');
-            return $this->redirect('index');
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+
+            $model->on(Spu::EVENT_AFTER_UPDATE, [$model, 'reassembleSkuNames']);
+
+            if ($model->save(false)) {
+                Yii::$app->session->setFlash('success', '修改已保存');
+                return $this->redirect('index');
+            }
         }
 
         return $this->render('update', [

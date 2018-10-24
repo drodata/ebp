@@ -26,11 +26,15 @@ return [
         ],
         'spu-property' => [
             'class' => 'drodata\controllers\TaxonomyController',
+            'modelClass' => 'backend\models\Taxonomy',
             'name' => '商品属性',
+            'isLite' => true,
         ],
         'spu-specification' => [
             'class' => 'drodata\controllers\TaxonomyController',
+            'modelClass' => 'backend\models\Taxonomy',
             'name' => '商品规格',
+            'isLite' => true,
         ],
         'attachment' => [
             'class' => 'dro\attachment\AttachmentController',

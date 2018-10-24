@@ -234,6 +234,15 @@ class Specification extends \drodata\db\ActiveRecord
     {
         return $this->hasMany(SkuSpecification::className(), ['specification_id' => 'id']);
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSkus()
+    {
+        return $this->hasMany(Sku::className(), ['id' => 'sku_id'])
+            ->viaTable('{{%sku_specification}}', ['specification_id' => 'id']);
+    }
     /**
      * @return \yii\db\ActiveQuery
      */

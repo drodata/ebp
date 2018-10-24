@@ -29,7 +29,7 @@ class Brand extends \drodata\db\ActiveRecord
     public function init()
     {
         parent::init();
-        // custom code follows
+        $this->on(self::EVENT_AFTER_UPDATE, [$this, 'applyChangeToSkus']);
     }
 
     /**
@@ -196,50 +196,18 @@ class Brand extends \drodata\db\ActiveRecord
     }
 
     /**
-     * CODE TEMPLATE
-     *
-     * @return User|null
-    public function getCreator()
-    {
-        return $this->hasOne(User::className(), ['id' => 'created_by']);
-    }
+     * 返回品牌全名（name + alias）
      */
-
-    /**
-     * CODE TEMPLATE
-     *
-     * 无需 sort 和 pagination 的 data provider
-     *
-    public function getItemsDataProvider()
+    public function getFullName()
     {
-        return new ActiveDataProvider([
-            'query' => static::find(),
-            'pagination' => false,
-            'sort' => false,
-        ]);
-    }
-    */
+        $name = $this->name;
 
-    /**
-     * CODE TEMPLATE
-     *
-     * 搭配 getItemsDataProvider() 使用，
-     * 计算累计值，可用在 grid footer 内
-    public function getItemsSum()
-    {
-        $amount = 0;
-
-        if (empty($this->itemsDataProvider->models)) {
-            return $amount;
-        }
-        foreach ($this->itemsDataProvider->models as $item) {
-            $amount += $item->quantity;
+        if ($this->alias) {
+            $name .= " {$this->alias}";
         }
 
-        return $amount;
-        
+        return $name;
     }
-     */
 
     // ==== getters end ====
 
@@ -310,44 +278,23 @@ class Brand extends \drodata\db\ActiveRecord
     // ==== event-handlers begin ====
 
     /**
-     * CODE TEMPLATE
+     * 修改后变化应用到所有相关 SKU.name 上
      *
-     * 保存附件。
-     *
-     * 可由 self::EVENT_AFTER_INSERT, self::EVENT_UPLOAD 等触发
-     *
-     * @param yii\web\UploadedFile $event->data 承兑图片
-    public function insertImages($event)
-    {
-        $images = $event->data;
-
-        Media::store([
-            'files' => $images,
-            'referenceId' => $this->id,
-            'type' => Media::TYPE_IMAGE,
-            'category' => Media::CATEGORY_ACCEPTANCE,
-            'from2to' => Mapping::ACCEPTANCE2MEDIA,
-        ]);
-    }
+     * 由 self::EVENT_AFTER_UPDATE 触发
      */
-
-    /**
-     * CODE TEMPLATE
-     *
-     * 删除文件
-     *
-     * 由 self::EVENT_BEFORE_DELETE 触发
-    public function deleteImages($event)
+    public function applyChangeToSkus($event)
     {
-        if (empty($this->images)) {
+        $spus = $this->spus;
+
+        if (empty($this->spus)) {
             return;
         }
-        foreach ($this->images as $image) {
-            if (!$image->delete()) {
-                throw new Exception('Failed to flush image.');
+
+        foreach ($this->spus as $spu) {
+            foreach ($spu->skus as $sku) {
+                $sku->reassembleName();
             }
         }
     }
-     */
     // ==== event-handlers end ====
 }

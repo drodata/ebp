@@ -9,7 +9,9 @@ use kartik\select2\Select2;
 /* @var $model backend\models\Spu */
 /* @var $form yii\bootstrap\ActiveForm */
 
-backend\assets\SpuAsset::register($this);
+if ($model->isNewRecord) {
+    backend\assets\SpuAsset::register($this);
+}
 ?>
 
 <?= $this->render('@drodata/views/_alert') ?>
@@ -21,6 +23,7 @@ backend\assets\SpuAsset::register($this);
     ]); ?>
     <?= $form->field($model, 'type')->inline()->radioList(Lookup::items('spu-type')) ?>
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'brand_id')->dropDownList(Lookup::brands(), ['prompt' => '可不填']) ?>
 
 <?php if ($model->isNewRecord): ?>
     <div class="form-group">

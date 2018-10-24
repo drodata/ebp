@@ -259,9 +259,27 @@ class Sku extends \drodata\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSkuSpecifications()
+    public function getSpecifications()
     {
-        return $this->hasMany(SkuSpecification::className(), ['sku_id' => 'id']);
+        return $this->hasMany(Specification::className(), ['id' => 'sku_id'])
+            ->viaTable('{{%sku_specification}}', ['specification_id' => 'id']);
+    }
+
+    public function getSpecificationNames()
+    {
+        $specifications = $this->specifications;
+        $names = [];
+
+        if ($specifications) {
+            $q = $this->getSpecifications()->joinWith('taxonomy')->select('{{%taxonomy}}.name')->orderBy([
+                '{{%taxonomy}}.parent_id' => SORT_ASC,
+                '{{%taxonomy}}.id' => SORT_ASC,
+            ]);
+
+            $names = ArrayHelper::getColumn($q->asArray()->all(), 'name');
+        }
+
+        return $names;
     }
 
     /**
@@ -304,6 +322,23 @@ class Sku extends \drodata\db\ActiveRecord
      */
 
     // ==== getters end ====
+
+    /**
+     * 重新组装 sku.name 列
+     */
+    public function reassembleName()
+    {
+        $slices = [
+            $this->spu->brand_id ? $this->spu->brand->fullName : '',
+            $this->spu->name,
+            $this->spu->isStrict ? implode(' ', $this->specificationNames) : '',
+        ];
+        $this->name = implode(' ', $slices);
+
+        if (!$this->save()) {
+            throw new Exception('Failed to save.');
+        }
+    }
 
     /**
      * CODE TEMPLATE

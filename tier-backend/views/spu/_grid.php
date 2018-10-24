@@ -52,7 +52,13 @@ echo GridView::widget([
                 return $model->lookup('visible');
             },
         ],
-        'brand_id',
+        [
+            'attribute' => 'brand_id',
+            'filter' => Lookup::brands(),
+            'value' => function ($model, $key, $index, $column) {
+                return $model->brand->name;
+            },
+        ],
         'description',
         'introduction',
         [

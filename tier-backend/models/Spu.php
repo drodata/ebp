@@ -37,7 +37,6 @@ class Spu extends \drodata\db\ActiveRecord
     public function init()
     {
         parent::init();
-        //$this->on(self::EVENT_BEFORE_DELETE, [$this, 'deleteItems']);
     }
 
     /**
@@ -188,7 +187,6 @@ class Spu extends \drodata\db\ActiveRecord
                     'icon' => 'upload',
                 ];
                 break;
-
             case 'delete':
                 $options = [
                     'title' => '删除',
@@ -609,24 +607,19 @@ class Spu extends \drodata\db\ActiveRecord
     // ==== event-handlers begin ====
 
     /**
-     * 保存附件。
+     * 重组 sku.name 值
      *
-     * 可由 self::EVENT_AFTER_INSERT, self::EVENT_UPLOAD 等触发
+     * 当 spu.brand_id, spu.name, 或属性值 改变时需要重新生成新的 sku.name.
      *
-     * @param yii\web\UploadedFile $event->data 承兑图片
-    public function insertImages($event)
-    {
-        $images = $event->data;
-
-        Media::store([
-            'files' => $images,
-            'referenceId' => $this->id,
-            'type' => Media::TYPE_IMAGE,
-            'category' => Media::CATEGORY_ACCEPTANCE,
-            'from2to' => Mapping::ACCEPTANCE2MEDIA,
-        ]);
-    }
+     * 由 self::EVENT_AFTER_UPDATE 等触发
+     *
      */
+    public function reassembleSkuNames($event)
+    {
+        foreach ($this->skus as $sku) {
+            $sku->reassembleName();
+        }
+    }
 
     /**
      * 删除文件

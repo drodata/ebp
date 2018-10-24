@@ -39,8 +39,6 @@ yat-bak.sql
 # static files
 static
 
-backend/views/test/index.php
-
 # Vim's swap files
 *.swp
 

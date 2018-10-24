@@ -43,10 +43,13 @@ use drodata\widgets\NavBar;
             'linkOptions' => [
             ],
             'items' => [
-                 ['label' => '产品', 'url' => '/spu/index'],
-                 ['label' => '商品', 'url' => '/sku/index'],
+                 ['label' => '产品(SPU)', 'url' => '/spu/index'],
+                 ['label' => '商品(SKU)', 'url' => '/sku/index'],
                  '<li class="divider"></li>',
                  ['label' => '品牌', 'url' => '/brand/index'],
+                 '<li class="divider"></li>',
+                 ['label' => '属性', 'url' => '/spu-property'],
+                 ['label' => '规格', 'url' => '/spu-specification'],
             ],
         ],
         [

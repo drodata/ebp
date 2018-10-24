@@ -17,6 +17,13 @@ use yii\base\NotSupportedException;
 class Lookup extends \drodata\models\Lookup
 {
     /**
+     * 品牌
+     */
+    public static function brands()
+    {
+        return ArrayHelper::map(Brand::find()->asArray()->all(), 'id', 'name');
+    }
+    /**
      * SPU 属性
      */
     public static function properties()
