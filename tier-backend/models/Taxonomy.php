@@ -6,6 +6,14 @@ Use Yii;
 
 class Taxonomy extends \drodata\models\Taxonomy
 {
+    public function init()
+    {
+        parent::init();
+
+        // 商品规格修改后重新组装商品名称
+        $this->on(self::EVENT_AFTER_UPDATE, [$this, 'reassembleSkuName']);
+    }
+
     const TYPE_SPU_SPECIFICATION = 'spu-specification';
 
     /**
@@ -41,7 +49,7 @@ class Taxonomy extends \drodata\models\Taxonomy
     /**
      * ‘spu-specification' 改变后需要同步 sku.name
      */
-    public function doAfterUpdate($event)
+    public function reassembleSkuName($event)
     {
         if (!$this->isSpuSpecification) {
             return;
