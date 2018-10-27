@@ -1,4 +1,4 @@
-Drodata's Yii2 Advanced Application Template
+Easy Buying Platform 卓易购
 ===============================
 
-阅读手册:[docs/SUMMARY.md](docs/SUMMARY.md)
+阅读手册:[docs/README.md](docs/README.md)
