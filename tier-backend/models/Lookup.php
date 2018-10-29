@@ -5,6 +5,7 @@ namespace backend\models;
 use Yii;
 use drodata\helpers\Html;
 use backend\models\Taxonomy;
+use drodata\models\Currency;
 use yii\helpers\ArrayHelper;
 use yii\base\NotSupportedException;
 
@@ -69,5 +70,13 @@ class Lookup extends \drodata\models\Lookup
         }
 
         return $map;
+    }
+
+    /**
+     * 货币下拉菜单
+     */
+    public static function currencies()
+    {
+        return ArrayHelper::map(Currency::find()->asArray()->all(), 'code', 'name');
     }
 }

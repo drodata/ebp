@@ -38,18 +38,32 @@ use drodata\widgets\NavBar;
             ],
         ],
         [
-            'label' => '产品',
+            'label' => '商品',
+            'label' => Html::icon('gift'),
             'encode' => false,
             'linkOptions' => [
             ],
             'items' => [
                  ['label' => '产品(SPU)', 'url' => '/spu/index'],
                  ['label' => '商品(SKU)', 'url' => '/sku/index'],
-                 '<li class="divider"></li>',
                  ['label' => '品牌', 'url' => '/brand/index'],
+                 '<li class="divider"></li>',
+                 ['label' => '价格组', 'url' => '/price-group/index'],
                  '<li class="divider"></li>',
                  ['label' => '属性', 'url' => '/spu-property'],
                  ['label' => '规格', 'url' => '/spu-specification'],
+                 '<li class="divider"></li>',
+            ],
+        ],
+        [
+            'label' => '杂项',
+            'label' => Html::icon('list'),
+            'encode' => false,
+            'linkOptions' => [
+            ],
+            'items' => [
+                 ['label' => '币种', 'url' => '/currency/index'],
+                 '<li class="divider"></li>',
             ],
         ],
         [
