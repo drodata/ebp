@@ -6,6 +6,9 @@ Use Yii;
 
 class Taxonomy extends \drodata\models\Taxonomy
 {
+    const TYPE_SPU_PROPERTY = 'spu-property';
+    const TYPE_SPU_SPECIFICATION = 'spu-specification';
+
     public function init()
     {
         parent::init();
@@ -14,12 +17,10 @@ class Taxonomy extends \drodata\models\Taxonomy
         $this->on(self::EVENT_AFTER_UPDATE, [$this, 'reassembleSkuName']);
     }
 
-    const TYPE_SPU_SPECIFICATION = 'spu-specification';
-
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPropeties()
+    public function getProperties()
     {
         return $this->hasMany(Property::className(), ['taxonomy_id' => 'id']);
     }
@@ -31,9 +32,31 @@ class Taxonomy extends \drodata\models\Taxonomy
         return $this->hasMany(Specification::className(), ['taxonomy_id' => 'id']);
     }
 
+    public function getIsSpuProperty()
+    {
+        return $this->type == self::TYPE_SPU_PROPERTY;
+    }
     public function getIsSpuSpecification()
     {
         return $this->type == self::TYPE_SPU_SPECIFICATION;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getHardDeleteHint()
+    {
+        switch ($this->type) {
+            case self::TYPE_SPU_PROPERTY:
+                return $this->properties ? '有商品使用了此属性，无法删除' : null;
+                break;
+            case self::TYPE_SPU_SPECIFICATION:
+                return $this->specifications ? '有商品使用了此规格，无法删除' : null;
+                break;
+            default:
+                return null;
+                break;
+        }
     }
 
     /**
