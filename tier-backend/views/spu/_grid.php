@@ -25,8 +25,6 @@ echo GridView::widget([
     // 'caption' => $caption,
     'filterModel' => $searchModel,
     'columns' => [
-        // ['class' => 'yii\grid\SerialColumn'],
-        'id',
         [
             'attribute' => 'mode',
             'filter' => Lookup::items('spu-mode'),
@@ -34,6 +32,9 @@ echo GridView::widget([
             'value' => function ($model, $key, $index, $column) {
                 return $model->lookup('mode');
             },
+            'contentOptions' => [
+                'style' => 'vertical-align:middle;',
+            ],
         ],
         [
             'attribute' => 'type',
@@ -42,8 +43,16 @@ echo GridView::widget([
             'value' => function ($model, $key, $index, $column) {
                 return $model->lookup('type');
             },
+            'contentOptions' => [
+                'style' => 'vertical-align:middle;',
+            ],
         ],
-        'name',
+        [
+            'attribute' => 'name',
+            'contentOptions' => [
+                'style' => 'vertical-align:middle;',
+            ],
+        ],
         [
             'attribute' => 'visible',
             'filter' => Lookup::items('boolean'),
@@ -51,6 +60,9 @@ echo GridView::widget([
             'value' => function ($model, $key, $index, $column) {
                 return $model->lookup('visible');
             },
+            'contentOptions' => [
+                'style' => 'vertical-align:middle;',
+            ],
         ],
         [
             'attribute' => 'brand_id',
@@ -58,14 +70,23 @@ echo GridView::widget([
             'value' => function ($model, $key, $index, $column) {
                 return $model->brand->name;
             },
+            'contentOptions' => [
+                'style' => 'vertical-align:middle;',
+            ],
         ],
-        'description',
-        'introduction',
+        [
+            'label' => '属性',
+            'format' => 'raw',
+            'value' => function ($model, $key, $index, $column) {
+                return $this->render('/sku/_grid-in-spu', ['dataProvider' => $model->skusDataProvider]);
+            },
+        ],
         [
             'class' => 'drodata\grid\ActionColumn',
-            'template' => '{view} {update} {upload-image} {adjust-specification} {delete}',
+            'template' => '{view} {update} {upload-image} {adjust-price} {adjust-specification} {delete}',
             'contentOptions' => [
-                'style' => 'min-width:120px',
+                'class' => 'text-center',
+                'style' => 'min-width:120px;vertical-align:middle;',
             ],
             'buttons' => [
                 'view' => function ($url, $model, $key) {
@@ -73,6 +94,9 @@ echo GridView::widget([
                 },
                 'update' => function ($url, $model, $key) {
                     return $model->actionLink('update');
+                },
+                'adjust-price' => function ($url, $model, $key) {
+                    return $model->actionLink('adjust-price');
                 },
                 'upload-image' => function ($url, $model, $key) {
                     return $model->actionLink('upload-image');

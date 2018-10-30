@@ -82,6 +82,9 @@ class Price extends \drodata\db\ActiveRecord
     public function rules()
     {
         return [
+            ['price_group_id', 'default', 'value' => 1], // 默认的基础价格组 ID
+            ['threshold', 'default', 'value' => 1],
+
             [['sku_id', 'price_group_id', 'threshold', 'price'], 'required'],
             [['sku_id', 'price_group_id', 'threshold'], 'integer'],
             [['price'], 'number'],
@@ -220,16 +223,6 @@ class Price extends \drodata\db\ActiveRecord
     {
         return $this->hasOne(Sku::className(), ['id' => 'sku_id']);
     }
-
-    /**
-     * CODE TEMPLATE
-     *
-     * @return User|null
-    public function getCreator()
-    {
-        return $this->hasOne(User::className(), ['id' => 'created_by']);
-    }
-     */
 
 
     // ==== getters end ====

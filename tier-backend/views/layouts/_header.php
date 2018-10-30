@@ -38,14 +38,12 @@ use drodata\widgets\NavBar;
             ],
         ],
         [
-            'label' => '商品',
-            'label' => Html::icon('gift'),
+            'label' => Html::icon('gift') . '商品',
             'encode' => false,
             'linkOptions' => [
             ],
             'items' => [
-                 ['label' => '产品(SPU)', 'url' => '/spu/index'],
-                 ['label' => '商品(SKU)', 'url' => '/sku/index'],
+                 ['label' => '商品', 'url' => '/spu/index'],
                  ['label' => '品牌', 'url' => '/brand/index'],
                  '<li class="divider"></li>',
                  ['label' => '价格组', 'url' => '/price-group/index'],

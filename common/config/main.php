@@ -35,7 +35,6 @@ return [
             'decimalSeparator' => '.',
             'thousandSeparator' => ' ',
             'defaultTimeZone' => 'Asia/Shanghai',
-            'nullDisplay' => '',
        ],
        'authManager' => [
            'class' => 'yii\rbac\DbManager', 

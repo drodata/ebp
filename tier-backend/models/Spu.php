@@ -180,6 +180,12 @@ class Spu extends \drodata\db\ActiveRecord
                     'icon' => 'pencil',
                 ];
                 break;
+            case 'adjust-price':
+                $options = [
+                    'title' => '调整价格',
+                    'icon' => 'rmb',
+                ];
+                break;
             case 'upload-image':
                 $route = ["/spu/image", 'do' => 'create', 'id' => $this->id];
                 $options = [
@@ -212,6 +218,14 @@ class Spu extends \drodata\db\ActiveRecord
         ])];
     }
 
+    public static function adjustPrices($prices)
+    {
+        foreach ($prices as $price) {
+            if (!$price->save()) {
+                throw new Exception($price->stringifyErrors());
+            }
+        }
+    }
     // ==== getters start ====
 
     /**
@@ -245,6 +259,14 @@ class Spu extends \drodata\db\ActiveRecord
     }
 
     /**
+     * @return Price[]|null
+     */
+    public function getBasePrices()
+    {
+        return Price::find()->joinWith(['priceGroup', 'sku'])->ofSpu($this->id)->base()->indexBy('sku_id')->all();
+    }
+
+    /**
      * @return User|null
     public function getCreator()
     {
@@ -255,15 +277,15 @@ class Spu extends \drodata\db\ActiveRecord
     /**
      * 无需 sort 和 pagination 的 data provider
      *
-    public function getItemsDataProvider()
+     */
+    public function getSkusDataProvider()
     {
         return new ActiveDataProvider([
-            'query' => static::find(),
+            'query' => $this->getSkus(),
             'pagination' => false,
             'sort' => false,
         ]);
     }
-    */
     /**
      * 搭配 getItemsDataProvider() 使用，
      * 计算累计值，可用在 grid footer 内

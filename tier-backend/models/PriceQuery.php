@@ -10,9 +10,13 @@ use Yii;
  */
 class PriceQuery extends \yii\db\ActiveQuery
 {
-    public function mine()
+    public function ofSpu($id)
     {
-        return $this->andWhere(['{{%cash}}.created_by' => Yii::$app->user->id]);
+        return $this->andWhere(['{{%sku}}.spu_id' => $id]);
+    }
+    public function base()
+    {
+        return $this->andWhere(['{{%price_group}}.is_base' => 1]);
     }
 
     /**

@@ -14,6 +14,7 @@ use backend\models\CommonForm;
 use backend\models\Spu;
 use backend\models\Sku;
 use backend\models\SpuSearch;
+use backend\models\Price;
 
 /**
  * SpuController implements the CRUD actions for Spu model.
@@ -212,6 +213,38 @@ class SpuController extends Controller
     }
 
     /**
+     * 调整基础价格
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionAdjustPrice($id)
+    {
+        $model = $this->findModel($id);
+
+        $prices = $model->basePrices;
+
+        if (empty($prices)) {
+            $prices = [];
+            foreach ($model->skus as $sku) {
+                $prices[$sku->id] = new Price(['sku_id' => $sku->id]);
+            }
+        }
+
+        if (Model::loadMultiple($prices, Yii::$app->request->post()) && Model::validateMultiple($prices)) {
+
+            Spu::adjustPrices($prices);
+
+            Yii::$app->session->setFlash('success', '修改已保存');
+            return $this->redirect('index');
+        }
+
+        return $this->render('adjust-price', [
+            'model' => $model,
+            'prices' => $prices,
+        ]);
+    }
+
+    /**
      * Deletes an existing Spu model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
@@ -223,33 +256,5 @@ class SpuController extends Controller
         Yii::$app->session->setFlash('success', '已删除');
 
         return $this->redirect(Yii::$app->request->referrer);
-    }
-
-    /**
-     * 为 Spu 模型上传附件 
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionUpload($id)
-    {
-        $model = $this->findModel($id);
-        // 根据需要修改场景值
-        $common = new CommonForm(['scenario' => CommonForm::SCENARIO_XXX]);
-
-        if ($common->load(Yii::$app->request->post())) {
-            $common->images = UploadedFile::getInstances($common, 'images');
-            if ($common->validate()) {
-                $model->on(Spu::EVENT_UPLOAD, [$model, 'insertImages'], $common->images);
-                $model->trigger(Spu::EVENT_UPLOAD);
-                Yii::$app->session->setFlash('success', '图片已上传。');
-
-                return $this->redirect('index');
-            }
-        }
-
-        return $this->render('upload', [
-            'model' => $model,
-            'common' => $common,
-        ]);
     }
 }
