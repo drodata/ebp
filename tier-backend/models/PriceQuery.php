@@ -14,6 +14,9 @@ class PriceQuery extends \yii\db\ActiveQuery
     {
         return $this->andWhere(['{{%sku}}.spu_id' => $id]);
     }
+    /**
+     * 基础价格
+     */
     public function base()
     {
         return $this->andWhere(['{{%price_group}}.is_base' => 1]);

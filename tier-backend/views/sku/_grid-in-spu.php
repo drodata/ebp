@@ -32,6 +32,19 @@ echo GridView::widget([
                 return implode(' ', $model->specificationNames);
             },
         ],
+        [
+            'label' => '基础价格',
+            'format' => 'decimal',
+            'value' => function ($model, $key, $index, $column) {
+                return $model->basePrice->price;
+            },
+            'headerOptions' => [
+                'class' => 'text-right',
+            ],
+            'contentOptions' => [
+                'class' => 'text-right',
+            ],
+        ],
         'stock',
         /*
         [

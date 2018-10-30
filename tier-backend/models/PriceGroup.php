@@ -222,7 +222,7 @@ class PriceGroup extends \drodata\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCurrencyCode()
+    public function getCurrency()
     {
         return $this->hasOne(Currency::className(), ['code' => 'currency_code']);
     }

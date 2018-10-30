@@ -281,6 +281,20 @@ class Sku extends \drodata\db\ActiveRecord
 
         return $names;
     }
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPrices()
+    {
+        return $this->hasMany(Price::className(), ['sku_id' => 'id']);
+    }
+    /**
+     * @return backend\models\Price | null
+     */
+    public function getBasePrice()
+    {
+        return $this->getPrices()->joinWith(['priceGroup'])->base()->one();
+    }
 
     /**
      * @return User|null
@@ -339,68 +353,6 @@ class Sku extends \drodata\db\ActiveRecord
             throw new Exception('Failed to save.');
         }
     }
-
-    /**
-     * CODE TEMPLATE
-     *
-    public function sign()
-    {
-        $this->status = 3;
-        if (!$this->save()) {
-            throw new Exception('Failed to save.');
-        }
-    }
-     */
-
-    /**
-     * AJAX 提交表单逻辑代码
-     *
-    public static function ajaxSubmit($post)
-    {
-        $d['status'] = true;
-
-        if (empty($post['Spu']['id'])) {
-            $model = new Spu();
-        } else {
-            $model = Spu::findOne($post['Spu']['id']);
-        }
-        $model->load($post);
-
-        // items
-        $items = [];
-        foreach ($post['PurchaseItem'] as $index => $item) {
-            $items[$index] = new PurchaseItem();
-        }
-        PurchaseItem::loadMultiple($items, $post);
-        foreach ($post['PurchaseItem'] as $index => $item) {
-            $d['status'] = $items[$index]->validate() && $d['status'];
-            if (!$items[$index]->validate()) {
-                $key = "purchaseitem-$index";
-                $d['errors'][$key] = $items[$index]->getErrors();
-            }
-        }
-
-        // all data is safe, start to submit 
-        if ($d['status']) {
-            // 根据需要调整如 status 列值
-            $model->on(self::EVENT_AFTER_INSERT, [$model, 'insertItems'], ['items' => $items]);
-
-            $model->on(self::EVENT_BEFORE_UPDATE, [$model, 'deleteItems']);
-            $model->on(self::EVENT_AFTER_UPDATE, [$model, 'insertItems'], ['items' => $items]);
-
-            if (!$model->save()) {
-                throw new Exception($model->stringifyErrors());
-            }
-            
-            $d['message'] = Html::tag('span', Html::icon('check') . '已保存', [
-                'class' => 'text-success',
-            ]);
-            $d['redirectUrl'] = Url::to(['/purchase/index']);
-        }
-
-        return $d;
-    }
-    */
 
     // ==== event-handlers begin ====
 
