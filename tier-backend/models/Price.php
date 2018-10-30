@@ -8,24 +8,24 @@ use yii\helpers\ArrayHelper;
 use yii\base\InvalidParamException;
 use yii\data\ActiveDataProvider;
 use yii\db\Exception;
-use drodata\models\Currency;
 use drodata\helpers\Html;
 use drodata\helpers\Utility;
+use drodata\behaviors\TimestampBehavior;
+use drodata\behaviors\BlameableBehavior;
 use drodata\behaviors\LookupBehavior;
 
 /**
- * This is the model class for table "price_group".
+ * This is the model class for table "price".
  * 
- * @property integer $id
- * @property string $currency_code
- * @property string $name
- * @property integer $is_base
- * @property string $offset
+ * @property integer $sku_id
+ * @property integer $price_group_id
+ * @property integer $threshold
+ * @property string $price
  *
- * @property Price[] $prices
- * @property Currency $currencyCode
+ * @property PriceGroup $priceGroup
+ * @property Sku $sku
  */
-class PriceGroup extends \drodata\db\ActiveRecord
+class Price extends \drodata\db\ActiveRecord
 {
     public function init()
     {
@@ -38,17 +38,17 @@ class PriceGroup extends \drodata\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'price_group';
+        return 'price';
     }
 
 
     /**
      * @inheritdoc
-     * @return PriceGroupQuery the active query used by this AR class.
+     * @return PriceQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new PriceGroupQuery(get_called_class());
+        return new PriceQuery(get_called_class());
     }
 
     /**
@@ -70,7 +70,7 @@ class PriceGroup extends \drodata\db\ActiveRecord
             'lookup' => [
                 'class' => LookupBehavior::className(),
                 'labelMap' => [
-                    'is_base' => ['boolean', []],
+                    'visible' => ['boolean', []],
                 ],
             ],
         ];
@@ -82,13 +82,12 @@ class PriceGroup extends \drodata\db\ActiveRecord
     public function rules()
     {
         return [
-            [['is_base'], 'default', 'value' => 0],
-            [['currency_code', 'name', 'is_base'], 'required'],
-            [['is_base'], 'integer'],
-            [['offset'], 'number'],
-            [['currency_code'], 'string', 'max' => 3],
-            [['name'], 'string', 'max' => 45],
-            [['currency_code'], 'exist', 'skipOnError' => true, 'targetClass' => Currency::className(), 'targetAttribute' => ['currency_code' => 'code']],
+            [['sku_id', 'price_group_id', 'threshold', 'price'], 'required'],
+            [['sku_id', 'price_group_id', 'threshold'], 'integer'],
+            [['price'], 'number'],
+            [['sku_id', 'price_group_id', 'threshold'], 'unique', 'targetAttribute' => ['sku_id', 'price_group_id', 'threshold']],
+            [['price_group_id'], 'exist', 'skipOnError' => true, 'targetClass' => PriceGroup::className(), 'targetAttribute' => ['price_group_id' => 'id']],
+            [['sku_id'], 'exist', 'skipOnError' => true, 'targetClass' => Sku::className(), 'targetAttribute' => ['sku_id' => 'id']],
         ];
         /**
          * CODE TEMPLATE
@@ -126,11 +125,10 @@ class PriceGroup extends \drodata\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => '价格组编号',
-            'currency_code' => '币种',
-            'name' => '名称',
-            'is_base' => '基础分组',
-            'offset' => '折扣',
+            'sku_id' => '商品',
+            'price_group_id' => '价格分组',
+            'threshold' => 'Threshold',
+            'price' => '单价',
         ];
     }
 
@@ -163,7 +161,7 @@ class PriceGroup extends \drodata\db\ActiveRecord
         $visible = true;
         $hint = null;
         $confirm = null;
-        $route = ["/price-group/$action", 'id' => $this->id];
+        $route = ["/price/$action", 'sku_id' => $this->sku_id, 'price_group_id' => $this->price_group_id, 'threshold' => $this->threshold];
 
         switch ($action) {
             case 'view':
@@ -191,10 +189,6 @@ class PriceGroup extends \drodata\db\ActiveRecord
                         'confirm' => '确定要执行删除操作吗？',
                     ],
                 ];
-
-                if ($this->is_base) {
-                    $hint = '无法删除基础价格组';
-                }
                 break;
 
             default:
@@ -215,17 +209,28 @@ class PriceGroup extends \drodata\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPrices()
+    public function getPriceGroup()
     {
-        return $this->hasMany(Price::className(), ['price_group_id' => 'id']);
+        return $this->hasOne(PriceGroup::className(), ['id' => 'price_group_id']);
     }
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCurrencyCode()
+    public function getSku()
     {
-        return $this->hasOne(Currency::className(), ['code' => 'currency_code']);
+        return $this->hasOne(Sku::className(), ['id' => 'sku_id']);
     }
+
+    /**
+     * CODE TEMPLATE
+     *
+     * @return User|null
+    public function getCreator()
+    {
+        return $this->hasOne(User::className(), ['id' => 'created_by']);
+    }
+     */
+
 
     // ==== getters end ====
 
