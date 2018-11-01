@@ -60,6 +60,12 @@ sudo chmod 640 yii2-sensitive.json
 
 # 初始化SPU 功能模块相关表格
 ./yii migrate --migrationPath=@drodata/migrations/sku
+
+# 初始化附件插件所需的 attachment 表格
+./yii migrate --migrationPath=@dro/attachment/migrations
+
+# 自有表格
+./yii migrate
 ```
 
 ## 3. 配置 Apache 虚拟主机

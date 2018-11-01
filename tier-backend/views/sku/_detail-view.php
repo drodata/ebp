@@ -5,13 +5,17 @@
 use yii\widgets\DetailView;
 use drodata\helpers\Html;
 use backend\models\Lookup;
-
 echo DetailView::widget([
     'model' => $model,
     'attributes' => [
         'id',
         'spu_id',
         'name',
+        'stock:integer',
+        'threshold:integer',
+        'description',
+        'introduction:ntext',
+        /*
         [
             'attribute' => 'status',
             'value' => $model->lookup('status'),
@@ -20,11 +24,6 @@ echo DetailView::widget([
             'attribute' => 'visible',
             'value' => $model->lookup('visible'),
         ],
-        'stock:integer',
-        'threshold:integer',
-        'description',
-        'introduction:ntext',
-        /*
         [
             'label' => '明细',
             'format' => 'raw',

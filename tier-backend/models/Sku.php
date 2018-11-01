@@ -78,11 +78,7 @@ class Sku extends \drodata\db\ActiveRecord
             'lookup' => [
                 'class' => LookupBehavior::className(),
                 'labelMap' => [
-                    /*
-                    'status' => ['status', [
-                        1 => 'danger',
-                    ]],
-                    */
+                    'status' => ['status', [ ]],
                 ],
             ],
         ];
@@ -261,8 +257,8 @@ class Sku extends \drodata\db\ActiveRecord
      */
     public function getSpecifications()
     {
-        return $this->hasMany(Specification::className(), ['id' => 'sku_id'])
-            ->viaTable('{{%sku_specification}}', ['specification_id' => 'id']);
+        return $this->hasMany(Specification::className(), ['id' => 'specification_id'])
+            ->viaTable('{{%sku_specification}}', ['sku_id' => 'id']);
     }
 
     public function getSpecificationNames()
@@ -270,14 +266,15 @@ class Sku extends \drodata\db\ActiveRecord
         $specifications = $this->specifications;
         $names = [];
 
-        if ($specifications) {
-            $q = $this->getSpecifications()->joinWith('taxonomy')->select('{{%taxonomy}}.name')->orderBy([
-                '{{%taxonomy}}.parent_id' => SORT_ASC,
-                '{{%taxonomy}}.id' => SORT_ASC,
-            ]);
-
-            $names = ArrayHelper::getColumn($q->asArray()->all(), 'name');
+        if (empty($specifications)) {
+            return $names;
         }
+
+        $q = $this->getSpecifications()->joinWith('taxonomy')->select('{{%taxonomy}}.name')->orderBy([
+            '{{%taxonomy}}.parent_id' => SORT_ASC,
+            '{{%taxonomy}}.id' => SORT_ASC,
+        ]);
+        $names = ArrayHelper::getColumn($q->asArray()->all(), 'name');
 
         return $names;
     }
