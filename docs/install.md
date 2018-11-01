@@ -49,23 +49,8 @@ sudo chmod 640 yii2-sensitive.json
 # 初始化项目，选择开发环境
 ./init
 
-# build RBAC tables
-./yii migrate --migrationPath=@yii/rbac/migrations
-
-# 初始化 RBAC 数据. ./yii rbac/flush 可清空所有授权信息
-./yii rbac/init
-
-# 初始化基础表格 (user, lookup, taxonomy 等)
-./yii migrate --migrationPath=@drodata/migrations
-
-# 初始化SPU 功能模块相关表格
-./yii migrate --migrationPath=@drodata/migrations/sku
-
-# 初始化附件插件所需的 attachment 表格
-./yii migrate --migrationPath=@dro/attachment/migrations
-
-# 自有表格
-./yii migrate
+# 执行分散在各地的 migrations, 构建应用所需的所有表格
+./post-init
 ```
 
 ## 3. 配置 Apache 虚拟主机
