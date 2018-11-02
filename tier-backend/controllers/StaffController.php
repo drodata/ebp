@@ -3,8 +3,10 @@
 namespace backend\controllers;
 
 use Yii;
+use backend\models\CommonForm;
 use backend\models\Staff;
 use backend\models\StaffSearch;
+use backend\models\User;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\ForbiddenHttpException;
@@ -41,9 +43,9 @@ class StaffController extends Controller
                         'allow' => false,
                     ],
                     [
-                        //'actions' => ['create', 'view', 'update', 'delete'],
+                        'actions' => ['index', 'create', 'view', 'modal-view', 'update', 'delete'],
                         'allow' => true,
-                        'roles' => ['@'],
+                        'roles' => ['admin'],
                     ],
                 ],
             ],
@@ -133,16 +135,30 @@ class StaffController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Staff();
+        $password = mt_rand(100000, 999999);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', '新记录已创建');
+        $model = new User(['scenario' => User::SCENARIO_STAFF]);
+        $model->setPassword($password);
+        $common = new CommonForm(['scenario' => CommonForm::SCENARIO_RBAC]);
+
+        if (
+            $model->load(Yii::$app->request->post()) 
+            && $model->validate()
+            && $common->load(Yii::$app->request->post()) 
+            && $common->validate()
+        ) {
+
+            $model->on(User::EVENT_AFTER_INSERT, [$model, 'insertStaff']);
+            $model->on(User::EVENT_AFTER_INSERT, [$model, 'assignRoles'], $common->roles);
+            $model->save();
+
+            Yii::$app->session->setFlash('success', '新记录已创建，初始密码是：' . $password);
             return $this->redirect('index');
-            //return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('create', [
             'model' => $model,
+            'common' => $common,
         ]);
     }
 
@@ -156,14 +172,27 @@ class StaffController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $common = new CommonForm([
+            'scenario' => CommonForm::SCENARIO_RBAC,
+            'roles' => $model->user->getRoleNames(),
+        ]);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if (
+            $model->load(Yii::$app->request->post()) 
+            && $model->validate()
+            && $common->load(Yii::$app->request->post()) 
+            && $common->validate()
+        ) {
+            $model->on(User::EVENT_AFTER_UPDATE, [$model->user, 'assignRoles'], $common->roles);
+            $model->save();
+
             Yii::$app->session->setFlash('success', '修改已保存');
             return $this->redirect('index');
         }
 
         return $this->render('update', [
             'model' => $model,
+            'common' => $common,
         ]);
     }
 

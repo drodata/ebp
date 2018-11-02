@@ -34,6 +34,11 @@ use drodata\widgets\NavBar;
             'items' => [
                  ['label' => '产品', 'url' => '/spu/create'],
                  ['label' => '用户', 'url' => '/user/create'],
+                 [
+                    'label' => '员工',
+                    'url' => '/staff/create',
+                    'visible' => Yii::$app->user->can('admin'),
+                ],
                  //'<li class="divider"></li>',
             ],
         ],

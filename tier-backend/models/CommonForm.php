@@ -13,8 +13,11 @@ class CommonForm extends \yii\base\Model
     /* 产品规格下拉菜单 */
     public $specifications;
 
+    public $roles;
+
     const SCENARIO_DEMO = 'demo';
     const SCENARIO_SPU = 'spu';
+    const SCENARIO_RBAC = 'rbac';
 
     /**
      * @inheritdoc
@@ -26,6 +29,8 @@ class CommonForm extends \yii\base\Model
             [['name'], 'validateAmount', 'on' => self::SCENARIO_DEMO],
 
             [['specifications'], 'required', 'on' => self::SCENARIO_SPU],
+
+            [['roles'], 'required', 'on' => self::SCENARIO_RBAC],
 
         ];
     }
@@ -44,6 +49,25 @@ class CommonForm extends \yii\base\Model
         return [
             'name' => '姓名',
             'specifications' => '产品规格',
+            'roles' => '角色',
         ];
+    }
+
+    public function getRolesList()
+    {
+        $auth = Yii::$app->authManager;
+        $roles = $auth->getRoles();
+
+        if (empty($roles)) {
+            return [];
+        }
+
+        $list = [];
+        foreach ($roles as $role) {
+            /* @var $role yii\rbac\Role */
+            $list[$role->name] = $role->description;
+        }
+
+        return $list;
     }
 }
