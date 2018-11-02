@@ -20,7 +20,7 @@ use drodata\behaviors\LookupBehavior;
  * @property string $currency_code
  * @property string $name
  * @property integer $is_base
- * @property string $offset
+ * @property string $discount
  *
  * @property Price[] $prices
  * @property Currency $currencyCode
@@ -85,7 +85,7 @@ class PriceGroup extends \drodata\db\ActiveRecord
             [['is_base'], 'default', 'value' => 0],
             [['currency_code', 'name', 'is_base'], 'required'],
             [['is_base'], 'integer'],
-            [['offset'], 'number'],
+            [['discount'], 'number'],
             [['currency_code'], 'string', 'max' => 3],
             [['name'], 'string', 'max' => 45],
             [['currency_code'], 'exist', 'skipOnError' => true, 'targetClass' => Currency::className(), 'targetAttribute' => ['currency_code' => 'code']],
@@ -130,7 +130,7 @@ class PriceGroup extends \drodata\db\ActiveRecord
             'currency_code' => '币种',
             'name' => '名称',
             'is_base' => '基础分组',
-            'offset' => '折扣',
+            'discount' => '折扣',
         ];
     }
 

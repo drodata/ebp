@@ -28,7 +28,7 @@ class PriceGroupSearch extends PriceGroup
         return [
             [['id', 'currency_code', 'name'], 'safe'],
             [['is_base'], 'integer'],
-            [['offset'], 'number'],
+            [['discount'], 'number'],
             // usefull when filtering on related columns
             //[['author.name'], 'safe'],
         ];
@@ -97,7 +97,7 @@ class PriceGroupSearch extends PriceGroup
         // grid filtering conditions
         $query->andFilterWhere([
             'is_base' => $this->is_base,
-            'offset' => $this->offset,
+            'discount' => $this->discount,
         ]);
 
         $query->andFilterWhere(['like', 'id', $this->id])

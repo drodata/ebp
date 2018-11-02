@@ -34,7 +34,7 @@ $this->registerJs($js);
         -->
     <?= $form->field($model, 'currency_code')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'offset')->input('number', ['step' => 0.01]) ?>
+    <?= $form->field($model, 'discount')->input('number', ['step' => 0.01]) ?>
 
     <?php if ($model->isNewRecord): ?>
     <?php endif; ?>

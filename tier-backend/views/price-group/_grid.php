@@ -25,7 +25,7 @@ echo GridView::widget([
             },
         ],
         [
-            'attribute' => 'offset',
+            'attribute' => 'discount',
             'format' => 'decimal',
             'headerOptions' => ['class' => 'text-right'],
             'contentOptions' => [
