@@ -32,31 +32,14 @@ $this->registerJs($js);
         <!--
         'inputTemplate' => '<div class="input-group"><div class="input-group-addon">$</div>{input}</div>'
         -->
-    <?= $form->field($model, 'id')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'price_group_id')->widget(Select2::classname(), [
-        'data' => [],
-        'options' => ['placeholder' => '请选择'],
-        'addon' => [
-            'append' => [
-                'content' => Html::button(Html::icon('plus'), [
-                    'class' => 'btn btn-default', 
-                    'data' => [
-                        'toggle' => 'tooltip',
-                        'title' => '新建', 
-                    ],
-                ]),
-                'asButton' => true
-            ]
-        ],
-    ]) ?>
-
+    <?php if ($model->isNewRecord): ?>
+        <?= $form->field($model, 'username')->textInput(['autoFocus' => true]) ?>
+    <?php else: ?>
+        <?= $form->field($model, 'name')->textInput(['autoFocus' => true]) ?>
+    <?php endif; ?>
     <?php if ($model->isNewRecord): ?>
     <?php endif; ?>
     <?php
-
-    // uncomment next line when using ajax submiting
-    // echo $form->field($model, 'id')->label(false)->hiddenInput();
 
     /**
     if ($model->isNewRecord) {

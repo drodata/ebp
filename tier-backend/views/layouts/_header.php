@@ -32,15 +32,25 @@ use drodata\widgets\NavBar;
                 'title' => '新建……',
             ],
             'items' => [
-                 ['label' => '产品', 'url' => '/spu/create'],
-                 ['label' => '用户', 'url' => '/user/create'],
-                 [
+                ['label' => '产品', 'url' => '/spu/create'],
+                ['label' => '用户', 'url' => '/user/create'],
+                [
                     'label' => '员工',
                     'url' => '/staff/create',
                     'visible' => Yii::$app->user->can('admin'),
                 ],
+                [
+                    'label' => '客户',
+                    'url' => '/customer/create',
+                    'visible' => Yii::$app->user->can('admin'),
+                ],
                  //'<li class="divider"></li>',
             ],
+        ],
+        [
+            'label' => '客户',
+            'url' => '/customer',
+            'visible' => Yii::$app->user->can('admin'),
         ],
         [
             'label' => Html::icon('gift') . '商品',

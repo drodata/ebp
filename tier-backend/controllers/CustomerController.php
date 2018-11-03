@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use Yii;
+use backend\models\User;
 use backend\models\Customer;
 use backend\models\CustomerSearch;
 use yii\web\Controller;
@@ -41,9 +42,9 @@ class CustomerController extends Controller
                         'allow' => false,
                     ],
                     [
-                        //'actions' => ['create', 'view', 'update', 'delete'],
+                        'actions' => ['index', 'create', 'view', 'modal-view', 'update', 'delete'],
                         'allow' => true,
-                        'roles' => ['@'],
+                        'roles' => ['admin'],
                     ],
                 ],
             ],
@@ -133,12 +134,16 @@ class CustomerController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Customer();
+        $model = new User(['scenario' => User::SCENARIO_CUSTOMER]);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+
+            $model->on(User::EVENT_BEFORE_INSERT, [$model, 'generateRandomPassword']);
+            $model->on(User::EVENT_AFTER_INSERT, [$model, 'insertCustomer']);
+            $model->save(false);
+
             Yii::$app->session->setFlash('success', '客户已创建');
             return $this->redirect('index');
-            //return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('create', [

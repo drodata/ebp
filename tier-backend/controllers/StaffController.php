@@ -135,10 +135,7 @@ class StaffController extends Controller
      */
     public function actionCreate()
     {
-        $password = mt_rand(100000, 999999);
-
         $model = new User(['scenario' => User::SCENARIO_STAFF]);
-        $model->setPassword($password);
         $common = new CommonForm(['scenario' => CommonForm::SCENARIO_RBAC]);
 
         if (
@@ -148,11 +145,13 @@ class StaffController extends Controller
             && $common->validate()
         ) {
 
+            $model->on(User::EVENT_BEFORE_INSERT, [$model, 'generateRandomPassword']);
             $model->on(User::EVENT_AFTER_INSERT, [$model, 'insertStaff']);
             $model->on(User::EVENT_AFTER_INSERT, [$model, 'assignRoles'], $common->roles);
+
             $model->save();
 
-            Yii::$app->session->setFlash('success', '新记录已创建，初始密码是：' . $password);
+            Yii::$app->session->setFlash('success', '员工已创建');
             return $this->redirect('index');
         }
 

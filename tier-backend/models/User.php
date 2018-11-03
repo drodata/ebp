@@ -11,6 +11,7 @@ use yii\db\Exception;
 class User extends \drodata\models\User
 {
     const SCENARIO_STAFF = 'staff';
+    const SCENARIO_CUSTOMER = 'customer';
 
     public function init()
     {
@@ -24,6 +25,7 @@ class User extends \drodata\models\User
     {
         return ArrayHelper::merge(parent::rules(), [
             self::SCENARIO_STAFF => self::OP_ALL,
+            self::SCENARIO_CUSTOMER => self::OP_ALL,
         ]);
     }
 
@@ -33,9 +35,19 @@ class User extends \drodata\models\User
             ['status', 'default', 'value' => 1],
 
             ['status', 'safe', 'on' => self::SCENARIO_STAFF],
+            ['status', 'safe', 'on' => self::SCENARIO_CUSTOMER],
         ];
 
         return ArrayHelper::merge($rules, parent::rules());
+    }
+    /**
+     * 写入前自动生成随机密码
+     *
+     * Triggered by self::EVENT_BEFORE_INSERT
+     */
+    public function generateRandomPassword($event)
+    {
+        $this->setPassword(mt_rand(100000, 999999));
     }
     /**
      * 新建员工
@@ -50,6 +62,20 @@ class User extends \drodata\models\User
 
         if (!$staff->save()) {
             throw new Exception($staff->stringifyErrors());
+        }
+    }
+    /**
+     * 新建客户
+     */
+    public function insertCustomer($event)
+    {
+        $customer = new Customer([
+            'id' => $this->id,
+            'name' => $this->username,
+        ]);
+
+        if (!$customer->save()) {
+            throw new Exception($customer->stringifyErrors());
         }
     }
 }

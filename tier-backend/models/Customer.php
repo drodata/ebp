@@ -81,6 +81,8 @@ class Customer extends \drodata\db\ActiveRecord
     public function rules()
     {
         return [
+            ['price_group_id', 'default', 'value' => 1], // price_group.id == 1
+
             [['price_group_id'], 'integer'],
             [['name'], 'string', 'max' => 45],
             [['price_group_id'], 'exist', 'skipOnError' => true, 'targetClass' => PriceGroup::className(), 'targetAttribute' => ['price_group_id' => 'id']],
