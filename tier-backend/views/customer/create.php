@@ -2,6 +2,7 @@
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Customer */
+/* @var $contact backend\models\Contact */
 
 use drodata\helpers\Html;
 use drodata\widgets\Box;
@@ -31,6 +32,7 @@ $this->params = [
         <?= Box::widget([
             'content' => $this->render('_form', [
                 'model' => $model,
+                'contact' => $contact,
             ]),
         ]) ?>
     </div>

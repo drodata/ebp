@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use Yii;
 use backend\models\User;
+use backend\models\Contact;
 use backend\models\Customer;
 use backend\models\CustomerSearch;
 use yii\web\Controller;
@@ -134,12 +135,19 @@ class CustomerController extends Controller
      */
     public function actionCreate()
     {
-        $model = new User(['scenario' => User::SCENARIO_CUSTOMER]);
+        $model = new User(['scenario' => User::SCENARIO_CUSTOMER, 'status' => 1]); 
+        $model->generateUserName();
+        $contact = new Contact(['category' => Contact::CATEGORY_CUSTOMER]);
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-
+        if (
+            $model->load(Yii::$app->request->post())
+            && $contact->load(Yii::$app->request->post())
+            && $model->validate()
+            && $contact->validate()
+        ) {
             $model->on(User::EVENT_BEFORE_INSERT, [$model, 'generateRandomPassword']);
             $model->on(User::EVENT_AFTER_INSERT, [$model, 'insertCustomer']);
+            $model->on(User::EVENT_AFTER_INSERT, [$model, 'insertContact'], $contact);
             $model->save(false);
 
             Yii::$app->session->setFlash('success', '客户已创建');
@@ -148,6 +156,7 @@ class CustomerController extends Controller
 
         return $this->render('create', [
             'model' => $model,
+            'contact' => $contact,
         ]);
     }
 

@@ -8,7 +8,6 @@ use drodata\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use backend\models\Lookup;
 use kartik\select2\Select2;
-
 /*
 $js = <<<JS
 JS;
@@ -20,23 +19,17 @@ $this->registerJs($js);
 
 <div class="customer-form">
     <?php $form = ActiveForm::begin([
-        'options' => [
-            'class' => 'prevent-duplicate-submission',
-            // 如果表单需要上传文件，去掉下面一行的注释
-            //'enctype' => 'multipart/form-data',
-        ],
-        // 如果表单需要通过 AJAX 提交，去掉下面两行的注释
-        // 'id' => 'customer-form',
-        // 'action' => 'ajax-submit',
+        'options' => ['class' => 'prevent-duplicate-submission'],
     ]); ?>
-        <!--
-        'inputTemplate' => '<div class="input-group"><div class="input-group-addon">$</div>{input}</div>'
-        -->
     <?php if ($model->isNewRecord): ?>
         <?= $form->field($model, 'username')->textInput(['autoFocus' => true]) ?>
     <?php else: ?>
         <?= $form->field($model, 'name')->textInput(['autoFocus' => true]) ?>
     <?php endif; ?>
+    <?= $this->render('@drodata/views/contact/_field', [
+        'form' => $form,
+        'model' => $contact,
+    ]) ?>
     <?php if ($model->isNewRecord): ?>
     <?php endif; ?>
     <?php

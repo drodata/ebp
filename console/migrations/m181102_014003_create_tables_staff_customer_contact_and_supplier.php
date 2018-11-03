@@ -96,6 +96,7 @@ class m181102_014003_create_tables_staff_customer_contact_and_supplier extends y
             'category' => $this->boolean()->notNull(),
             'is_lite' => $this->boolean()->notNull()->defaultValue(1),
             'is_main' => $this->boolean()->notNull()->defaultValue(0),
+            'visible' => $this->boolean()->notNull()->defaultValue(1),
             'user_id' => $this->integer()->null(),
             'province_id' => $this->smallInteger()->null(),
             'city_id' => $this->smallInteger()->null(),

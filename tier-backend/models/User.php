@@ -32,13 +32,22 @@ class User extends \drodata\models\User
     public function rules()
     {
         $rules = [
-            ['status', 'default', 'value' => 1],
+            //['status', 'default', 'value' => 1],
 
             ['status', 'safe', 'on' => self::SCENARIO_STAFF],
             ['status', 'safe', 'on' => self::SCENARIO_CUSTOMER],
         ];
 
-        return ArrayHelper::merge($rules, parent::rules());
+        return ArrayHelper::merge(parent::rules(), $rules);
+    }
+
+    public function generateUserName()
+    {
+        $user = static::find()->orderBy('id DESC')->limit(1)->one();
+
+        $id = $user->id + 1;
+
+        $this->username = 'user' . $id;
     }
     /**
      * 写入前自动生成随机密码
@@ -76,6 +85,18 @@ class User extends \drodata\models\User
 
         if (!$customer->save()) {
             throw new Exception($customer->stringifyErrors());
+        }
+    }
+    /**
+     * 写入地址
+     */
+    public function insertContact($event)
+    {
+        $contact = $event->data;
+        $contact->user_id = $this->id;
+
+        if (!$contact->save()) {
+            throw new Exception($contact->stringifyErrors());
         }
     }
 }
