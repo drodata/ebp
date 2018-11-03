@@ -12,7 +12,7 @@ class m181101_073603_add_column_shop_id_to_table_option extends yii\db\Migration
      */
     public function safeUp()
     {
-        $this->addColumn('{{%option}}', 'shop_id', $this->integer()->notNull()->after('user_id'));
+        $this->addColumn('{{%option}}', 'shop_id', $this->integer()->null()->after('user_id'));
         $this->addForeignKey(
             'fk-option-shop',
             '{{%option}}', 'shop_id',

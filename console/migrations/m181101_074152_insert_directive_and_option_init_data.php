@@ -15,15 +15,16 @@ class m181101_074152_insert_directive_and_option_init_data extends yii\db\Migrat
     public function safeUp()
     {
         $this->batchInsert('{{%directive}}', ['category', 'code', 'name', 'format'], [
-            ['shop-switch', 'enableMultipleShop', '多店铺开关', 'switch'],
+            ['app', 'enableMultipleShop', '多店铺开关', 'switch'],
             ['shop-switch', 'enablePriceGroup', '价格分组开关', 'switch'],
         ]);
         $this->batchInsert(
             '{{%option}}',
             ['directive_code', 'value', 'user_id', 'shop_id'],
             [
+                ['enableMultipleShop', 0, null, null],
+
                 // shop ID: 1 是默认的店铺
-                ['enableMultipleShop', 0, null, 1],
                 ['enablePriceGroup', 0, null, 1],
             ]
         );
