@@ -11,11 +11,15 @@
 # 初始化基础表格 (user, lookup, taxonomy 等)
 ./yii migrate --migrationPath=@drodata/migrations
 
-# 初始化SPU 功能模块相关表格
-./yii migrate --migrationPath=@drodata/migrations/sku
-
 # 初始化附件插件所需的 attachment 表格
 ./yii migrate --migrationPath=@dro/attachment/migrations
 
-# 自有表格
+# 初始化SPU 功能模块相关表格
+./yii migrate --migrationPath=@drodata/migrations/sku
+
+# 初始化地址模块表格 regioon and contact
+./yii migrate --migrationPath=@drodata/migrations/contact
+
+
+# 应用自有表格
 ./yii migrate
