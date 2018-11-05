@@ -4,19 +4,17 @@ namespace backend\controllers;
 
 use Yii;
 use backend\models\CommonForm;
-use backend\models\Brand;
-use backend\models\BrandSearch;
+use backend\models\Contact;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\ForbiddenHttpException;
-use yii\web\UploadedFile;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 
 /**
- * BrandController implements the CRUD actions for Brand model.
+ * ContactController implements the CRUD actions for Contact model.
  */
-class BrandController extends Controller
+class ContactController extends Controller
 {
 
     /**
@@ -43,7 +41,7 @@ class BrandController extends Controller
                         'allow' => false,
                     ],
                     [
-                        //'actions' => ['create', 'view', 'update', 'delete'],
+                        'actions' => ['create', 'view', 'modal-view', 'update', 'delete'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -59,37 +57,23 @@ class BrandController extends Controller
     }
 
     /**
-     * Finds the Brand model based on its primary key value.
+     * Finds the Contact model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Brand the loaded model
+     * @return Contact the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Brand::findOne($id)) !== null) {
+        if (($model = Contact::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
-    /**
-     * Lists all Brand models.
-     * @return mixed
-     */
-    public function actionIndex()
-    {
-        $searchModel = new BrandSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
 
     /**
-     * Displays a single Brand model.
+     * Displays a single Contact model.
      * @param integer $id
      * @return mixed
      */
@@ -116,50 +100,35 @@ class BrandController extends Controller
     }
 
     /**
-     * 在 Modal 内高级搜索
-     */
-    public function actionModalSearch()
-    {
-        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-
-        return $this->renderPartial('modal-search', [
-            'model' => new BrandSearch(),
-        ]);
-
-    }
-
-    /**
-     * Creates a new Brand model.
+     * Creates a new Contact model.
      * If creation is successful, the browser will be redirected to the 'view' page.
+     * @param integer $category
+     * @param integer $user_id
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($category, $user_id)
     {
-        $model = new Brand();
+        $model = new Contact([
+            'category' => $category,
+            'user_id' => $user_id,
+        ]);
+
+        list($label, $subtitle, $redirectRoute) = $model->getViewParams();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             Yii::$app->session->setFlash('success', '新记录已创建');
-            return $this->redirect('index');
-            //return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect($redirectRoute);
         }
 
-        return $this->render('create', [
+        return $this->render('@drodata/views/contact/form', [
             'model' => $model,
+            'label' => $label,
+            'subtitle' => $subtitle,
         ]);
     }
 
     /**
-     * AJAX 提交表单
-     */
-    public function actionAjaxSubmit()
-    {
-        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-
-        return Brand::ajaxSubmit($_POST);
-    }
-
-    /**
-     * Updates an existing Brand model.
+     * Updates an existing Contact model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -167,19 +136,22 @@ class BrandController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        list($label, $subtitle, $redirectRoute) = $model->getViewParams();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             Yii::$app->session->setFlash('success', '修改已保存');
-            return $this->redirect('index');
+            return $this->redirect($redirectRoute);
         }
 
-        return $this->render('update', [
+        return $this->render('@drodata/views/contact/form', [
             'model' => $model,
+            'label' => $label,
+            'subtitle' => $subtitle,
         ]);
     }
 
     /**
-     * Deletes an existing Brand model.
+     * Deletes an existing Contact model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed

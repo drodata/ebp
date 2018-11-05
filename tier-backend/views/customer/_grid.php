@@ -27,11 +27,12 @@ echo GridView::widget([
     'columns' => [
         // ['class' => 'yii\grid\SerialColumn'],
         'id',
+        'user.username',
         'name',
         'price_group_id',
         [
             'class' => 'drodata\grid\ActionColumn',
-            'template' => '{view} {update} {delete}',
+            'template' => '{view} {update} {create-contact} {delete}',
             'contentOptions' => [
                 'style' => 'min-width:120px',
             ],
@@ -44,6 +45,9 @@ echo GridView::widget([
                 },
                 'delete' => function ($url, $model, $key) {
                     return $model->actionLink('delete');
+                },
+                'create-contact' => function ($url, $model, $key) {
+                    return $model->actionLink('create-contact');
                 },
             ],
         ],

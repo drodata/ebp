@@ -15,10 +15,7 @@ class CustomerSearch extends Customer
 {
     public function attributes()
     {
-        return parent::attributes();
-
-        // add related fields to searchable attributes
-        // return array_merge(parent::attributes(), ['author.name']);
+        return array_merge(parent::attributes(), ['user.username']);
     }
     /**
      * @inheritdoc
@@ -29,7 +26,7 @@ class CustomerSearch extends Customer
             [['id', 'name'], 'safe'],
             [['price_group_id'], 'integer'],
             // usefull when filtering on related columns
-            //[['author.name'], 'safe'],
+            [['user.username'], 'safe'],
         ];
     }
 
@@ -51,14 +48,7 @@ class CustomerSearch extends Customer
      */
     public function search($params)
     {
-        $query = Customer::find();
-        /*
-        $query = Customer::find()->joinWith(['company']);
-            ->where(['{{%company}}.category' => Company::CATEGORY_LOGISTICS]);
-        if (Yii::$app->user->can('saler') && !Yii::$app->user->can('saleDirector')) {
-            $query->andWhere(['{{%interaction}}.created_by' => Yii::$app->user->id]);
-        }
-        */
+        $query = Customer::find()->joinWith(['user']);
 
         // add conditions that should always apply here
 
@@ -68,20 +58,19 @@ class CustomerSearch extends Customer
 
         $dataProvider->setSort([
             'attributes' => [
-                /*
-                'company.x' => [
-                    'asc'  => ['{{%company}}.x USING gbk)' => SORT_ASC],
-                    'desc' => ['{{%company}}.x USING gbk)' => SORT_DESC],
+                'id',
+                'name' => [
+                    'asc'  => ['CONVERT({{%customer}}.name USING gbk)' => SORT_ASC],
+                    'desc' => ['CONVERT({{%customer}}.name USING gbk)' => SORT_DESC],
                 ],
-                'company.name' => [
-                    'asc'  => ['CONVERT({{%company}}.full_name USING gbk)' => SORT_ASC],
-                    'desc' => ['CONVERT({{%company}}.full_name USING gbk)' => SORT_DESC],
+                'user.username' => [
+                    'asc'  => ['{{%user}}.username' => SORT_ASC],
+                    'desc' => ['{{%user}}.username' => SORT_DESC],
                 ],
-                */
             ],
             // Warning: defaultOrder 内指定的列必须在上面的 attributes 内声明过，否则排序无效
             'defaultOrder' => [
-                //'created_at' => SORT_DESC,
+                'id' => SORT_DESC,
             ],
         ]);
 
@@ -99,8 +88,8 @@ class CustomerSearch extends Customer
         ]);
 
         $query->andFilterWhere(['like', 'id', $this->id])
-            ->andFilterWhere(['like', 'name', $this->name]);
-            //->andFilterWhere(['like', '{{%t}}.c', $this->getAttribute('t.c')]);
+            ->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', '{{%user}}.username', $this->getAttribute('user.username')]);
 
         return $dataProvider;
     }

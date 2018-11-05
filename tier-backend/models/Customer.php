@@ -176,6 +176,12 @@ class Customer extends \drodata\db\ActiveRecord
                     'icon' => 'pencil',
                 ];
                 break;
+            case 'create-contact':
+                $route = ['/contact/create', 'category' => Contact::CATEGORY_CUSTOMER, 'user_id' => $this->id];
+                $options = [
+                    'title' => '新增地址',
+                ];
+                break;
 
             case 'delete':
                 $options = [
@@ -214,20 +220,26 @@ class Customer extends \drodata\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getId0()
+    public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'id']);
     }
-
     /**
-     * CODE TEMPLATE
-     *
-     * @return User|null
-    public function getCreator()
-    {
-        return $this->hasOne(User::className(), ['id' => 'created_by']);
-    }
+     * @return \yii\db\ActiveQuery
      */
+    public function getContacts()
+    {
+        return $this->hasMany(Contact::className(), ['user_id' => 'id']);
+    }
+
+    public function getContactsDataProvider()
+    {
+        return new ActiveDataProvider([
+            'query' => $this->getContacts(),
+            'pagination' => false,
+            'sort' => false,
+        ]);
+    }
 
 
     // ==== getters end ====

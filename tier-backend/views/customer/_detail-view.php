@@ -12,12 +12,10 @@ echo DetailView::widget([
         'id',
         'name',
         'price_group_id',
-        /*
         [
-            'label' => '明细',
+            'label' => '联系方式',
             'format' => 'raw',
-            'value' => $this->render('_grid-item', ['model' => $model]),
+            'value' => $this->render('@drodata/views/contact/_list', ['dataProvider' => $model->contactsDataProvider]),
         ],
-        */
     ],
 ]);
