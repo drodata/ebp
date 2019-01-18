@@ -18,6 +18,19 @@ use yii\filters\VerbFilter;
  */
 class SkuController extends Controller
 {
+    /**
+     * @inheritdoc
+     */
+    public function actions()
+    {
+        return [
+            'image' => [
+                'class' => 'dro\attachment\UploadAction',
+                'modelClass' => 'backend\models\Sku',
+                'uploadFormClass' => 'backend\models\UploadForm',
+            ],
+        ];
+    }
 
     /**
      * @inheritdoc

@@ -26,6 +26,16 @@ echo GridView::widget([
     'filterModel' => $searchModel,
     'columns' => [
         [
+            'label' => '',
+            'format' => 'raw',
+            'value' => function ($model, $key, $index, $column) {
+                return $model->images[0]->thumbnail;
+            },
+            'contentOptions' => [
+                'style' => 'vertical-align:middle;',
+            ],
+        ],
+        [
             'attribute' => 'mode',
             'filter' => Lookup::items('spu-mode'),
             'format' => 'raw',

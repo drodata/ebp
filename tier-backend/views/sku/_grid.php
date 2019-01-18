@@ -25,9 +25,17 @@ echo GridView::widget([
     // 'caption' => $caption,
     'filterModel' => $searchModel,
     'columns' => [
-        // ['class' => 'yii\grid\SerialColumn'],
+        [
+            'label' => '',
+            'format' => 'raw',
+            'value' => function ($model, $key, $index, $column) {
+                return $model->images[0]->thumbnail;
+            },
+            'contentOptions' => [
+                'style' => 'vertical-align:middle;',
+            ],
+        ],
         'id',
-        'spu_id',
         'name',
         'status',
         [
@@ -56,7 +64,7 @@ echo GridView::widget([
         'introduction',
         [
             'class' => 'drodata\grid\ActionColumn',
-            'template' => '{view} {update} {delete}',
+            'template' => '{view} {update} {upload-image} {delete}',
             'contentOptions' => [
                 'style' => 'min-width:120px',
             ],
@@ -66,6 +74,9 @@ echo GridView::widget([
                 },
                 'update' => function ($url, $model, $key) {
                     return $model->actionLink('update');
+                },
+                'upload-image' => function ($url, $model, $key) {
+                    return $model->actionLink('upload-image');
                 },
                 'delete' => function ($url, $model, $key) {
                     return $model->actionLink('delete');

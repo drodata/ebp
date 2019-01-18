@@ -12,6 +12,7 @@ class UploadForm extends Model
     public $files;
 
 	const SCENARIO_SPU_IMAGE = 'spu-image';
+	const SCENARIO_SKU_IMAGE = 'sku-image';
 
     public function rules()
     {
@@ -25,6 +26,15 @@ class UploadForm extends Model
                 'maxFiles' => 2,
                 'on' => self::SCENARIO_SPU_IMAGE,
             ],
+            [
+                'files',
+                'image',
+                'extensions' => ['png', 'jpg'],
+                'skipOnEmpty' => false,
+                'skipOnError' => false,
+                'maxFiles' => 2,
+                'on' => self::SCENARIO_SKU_IMAGE,
+            ],
         ];
     }
 
@@ -36,6 +46,9 @@ class UploadForm extends Model
         switch ($this->scenario) {
             case self::SCENARIO_SPU_IMAGE:
                 $files = '产品图片';
+                break;
+            case self::SCENARIO_SKU_IMAGE:
+                $files = '商品图片';
                 break;
             default:
                 $files = '图片';
@@ -99,6 +112,14 @@ class UploadForm extends Model
                 ];
                 $junctionModelClass = '\backend\models\SpuImage';
                 $junctionAttribute = 'spu_id';
+                break;
+            case self::SCENARIO_SKU_IMAGE:
+                $attributes = [
+                    'format' => Attachment::FORMAT_IMG,
+                    'category' => Attachment::CATEGORY_SKU_IMAGE,
+                ];
+                $junctionModelClass = '\backend\models\SkuImage';
+                $junctionAttribute = 'sku_id';
                 break;
         }
 

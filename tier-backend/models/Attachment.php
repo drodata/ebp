@@ -31,6 +31,7 @@ class Attachment extends \drodata\db\ActiveRecord
     const FORMAT_PNG = 'png';
 
     const CATEGORY_SPU_IMAGE = 'spu-image';
+    const CATEGORY_SKU_IMAGE = 'sku-image';
 
     public function init()
     {
@@ -173,6 +174,9 @@ class Attachment extends \drodata\db\ActiveRecord
         switch ($this->category) {
             case self::CATEGORY_SPU_IMAGE:
                 return $this->hasMany(SpuImage::className(), ['attachment_id' => 'id']);
+                break;
+            case self::CATEGORY_SKU_IMAGE:
+                return $this->hasMany(SkuImage::className(), ['attachment_id' => 'id']);
                 break;
         }
     }
