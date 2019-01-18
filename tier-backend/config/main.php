@@ -20,9 +20,24 @@ return [
         'currency' => [
             'class' => 'drodata\controllers\CurrencyController',
         ],
-        'spu-category' => [
-            'class' => 'drodata\controllers\TaxonomyController',
+        'spu-type' => [
+            'class' => 'drodata\controllers\LookupController',
             'name' => '商品分类',
+            'as access' => [
+                'class' => 'yii\filters\AccessControl',
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['admin'],
+                    ],
+                ],
+            ],
+            'as verbs' => [
+                'class' => 'yii\filters\VerbFilter',
+                'actions' => [
+                    'delete' => ['POST'],
+                ],
+            ],
         ],
         'spu-property' => [
             'class' => 'drodata\controllers\TaxonomyController',

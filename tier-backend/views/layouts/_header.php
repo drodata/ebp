@@ -60,7 +60,9 @@ use drodata\widgets\NavBar;
             'items' => [
                  ['label' => '产品', 'url' => '/spu/index'],
                  ['label' => '商品', 'url' => '/sku/index'],
+                 '<li class="divider"></li>',
                  ['label' => '品牌', 'url' => '/brand/index'],
+                 ['label' => '产品分类', 'url' => '/spu-type/index'],
                  '<li class="divider"></li>',
                  ['label' => '价格组', 'url' => '/price-group/index'],
                  '<li class="divider"></li>',
