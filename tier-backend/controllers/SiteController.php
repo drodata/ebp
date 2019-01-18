@@ -5,7 +5,7 @@ use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-use drodata\models\Option;
+use backend\models\Option;
 
 /**
  * Site controller
