@@ -3,6 +3,7 @@
 use yii\bootstrap\ActiveForm;
 use drodata\helpers\Html;
 use drodata\widgets\Box;
+use backend\models\Lookup;
 
 /* @var $this yii\web\View */
 /* @var $options drodata\models\Option[] */
@@ -30,13 +31,11 @@ $this->params = [
             <?php $form = ActiveForm::begin(); ?>
         
             <?php foreach ($options as $code => $option): ?>
-                <h4><?= $option->directive->name ?></h4>
                 <?php
-                switch ($option->directive->format) {
-                    case 
+                if ($option->directive->isBoolean) {
+                    echo $form->field($option, "[$code]value")->label($option->directive->name)->inline()->radioList(Lookup::items('boolean'));
                 }
                 ?>
-                <?= $form->field($option, "[$code]value")->label($option->directive->name)->textInput(['maxlength' => true]) ?>
             <?php endforeach; ?>
         
             <div class="form-group">

@@ -73,6 +73,9 @@ class SiteController extends Controller
         return $this->goHome();
     }
 
+    /**
+     * 应用的偏好设置
+     */
     public function actionPreference()
     {
         $options = Option::find()->joinWith('directive')->app()->indexBy('directive_code')->all();
