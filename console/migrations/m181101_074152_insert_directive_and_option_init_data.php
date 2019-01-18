@@ -14,9 +14,9 @@ class m181101_074152_insert_directive_and_option_init_data extends yii\db\Migrat
      */
     public function safeUp()
     {
-        $this->batchInsert('{{%directive}}', ['category', 'code', 'name', 'format'], [
-            ['app', 'enableMultipleShop', '多店铺开关', 'switch'],
-            ['shop-switch', 'enablePriceGroup', '价格分组开关', 'switch'],
+        $this->batchInsert('{{%directive}}', ['scope', 'category', 'code', 'name', 'format', 'description'], [
+            ['app', null, 'enableMultipleShop', '多店铺开关', 'boolean', '适合有多个门店的场景'],
+            ['shop', null, 'enablePriceGroup', '价格分组开关', 'boolean', '不同的用户指定设定不同的价格折扣，适合老客户或批发场景'],
         ]);
         $this->batchInsert(
             '{{%option}}',

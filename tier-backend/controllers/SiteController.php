@@ -5,6 +5,7 @@ use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use drodata\models\Option;
 
 /**
  * Site controller
@@ -23,6 +24,11 @@ class SiteController extends Controller
                     [
                         'actions' => ['login', 'error', 'test'],
                         'allow' => true,
+                    ],
+                    [
+                        'actions' => ['preference'],
+                        'allow' => true,
+                        'roles' => ['admin'],
                     ],
                     [
                         'actions' => ['logout', 'index'],
@@ -67,11 +73,10 @@ class SiteController extends Controller
         return $this->goHome();
     }
 
-    /**
-     * Test action, used to quick debug
-     */
-    public function actionTest()
+    public function actionPreference()
     {
-        // put your test code here
+        $options = Option::find()->joinWith('directive')->app()->indexBy('directive_code')->all();
+        return $this->render('preference', ['options' => $options]);
     }
+
 }
