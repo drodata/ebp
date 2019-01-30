@@ -83,6 +83,10 @@ class Sku extends \drodata\db\ActiveRecord
             ],
         ];
     }
+    public function extraFields()
+    {
+        return ['spu'];
+    }
 
     /**
      * @inheritdoc

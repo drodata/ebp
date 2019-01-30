@@ -14,9 +14,23 @@ return [
     'controllerNamespace' => 'api\controllers',
     'components' => [
         'user' => [
-            'identityClass' => 'common\models\User',
+            'identityClass' => 'backend\models\User',
             'enableSession' => false,
             'loginUrl' => null,
+        ],
+        'request' => [
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ],
+        ],
+        'response' => [
+            'class' => 'yii\web\Response',
+            'on beforeSend' => function ($event) {
+                $response = $event->sender;
+                if ($response->isSuccessful) {
+                    $response->statusCode = 200;
+                }
+            },
         ],
         'urlManager' => [
             'enablePrettyUrl' => true,
@@ -24,6 +38,7 @@ return [
             'showScriptName' => false,
             'rules' => [
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'user'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'sku'],
                 /*
                 [
                     'class' => 'yii\rest\UrlRule',

@@ -5,15 +5,15 @@ namespace api\controllers;
 use yii\rest\ActiveController;
 use yii\data\ActiveDataProvider;
 use yii\filters\auth\QueryParamAuth;
-use common\models\User;
+use backend\models\Sku;
 
-class UserController extends ActiveController
+class SkuController extends ActiveController
 {
-    public $modelClass = 'backend\models\User';
+    public $modelClass = 'backend\models\Sku';
 
     public function actionIndex()
     {
-        $query = User::find()->joinWith(['group']);
+        $query = Sku::find()->joinWith(['spu']);
         return new ActiveDataProvider([
             'query' => $query,
             'pagination' => [],
