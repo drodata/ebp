@@ -153,6 +153,13 @@ class Brand extends \drodata\db\ActiveRecord
         $route = ["/brand/$action", 'id' => $this->id];
 
         switch ($action) {
+            case 'view':
+                $options = [
+                    'title' => '详情',
+                    'icon' => 'eye',
+                    'class' => 'modal-view',
+                ];
+                break;
             case 'update':
                 $options = [
                     'title' => '修改',

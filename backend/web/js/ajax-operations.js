@@ -5,15 +5,9 @@ $(function(){
     
     // global modal show handler
     $(document).on('show.bs.modal', '.modal', function () {
-        // enable nested bootstrap modal
-        var zIndex = 1040 + (10 * $('.modal:visible').length);
-        $(this).css('z-index', zIndex);
-        setTimeout(function() {
-            $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
-        }, 0);
-
         // opt in tooltip and popover in modal
         $('[data-toggle="tooltip"]').tooltip();
+        $('a:not([data-toggle])').tooltip();
         $('[data-toggle="popover"]').popover();
     });
 
@@ -38,7 +32,8 @@ $(function(){
     $(document).on('click', '.modal-view', function(e) {
         e.preventDefault();
 
-        var selecter = '#view-modal'
+        // enable nested .modal-view modal
+        var selecter = $(this).data('modal') == undefined ? '#view-modal' : '#' + $(this).data('modal')
         $(this).tooltip('hide');
 
         var queryString = $(this).prop('href').split('?')[1];
