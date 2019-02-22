@@ -30,5 +30,6 @@ class AppAsset extends AssetBundle
         'drodata\assets\AdminLTECustomAsset',
         'drodata\trekshot\TrekshotAsset',
         'drodata\assets\GenericModelAsset',
+        'drodata\assets\BackendUexAsset',
     ];
 }
