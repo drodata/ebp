@@ -38,7 +38,17 @@ return [
             'showScriptName' => false,
             'rules' => [
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'user'],
-                ['class' => 'yii\rest\UrlRule', 'controller' => 'sku'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'brand'],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'sku',
+                    'ruleConfig' => [
+                        'class' => 'yii\web\UrlRule',
+                        'defaults' => [
+                            'expand' => 'spu',
+                        ]
+                    ],
+                ],
                 /*
                 [
                     'class' => 'yii\rest\UrlRule',
