@@ -15,14 +15,15 @@ use drodata\behaviors\BlameableBehavior;
 use drodata\behaviors\LookupBehavior;
 
 /**
- * This is the model class for table "customer".
+ * This is the model class for table "price".
  * 
  * @property integer $id
- * @property string $name
+ * @property integer $sku_id
+ * @property string $value
  *
- * @property User $id0
+ * @property Sku $sku
  */
-class Customer extends \drodata\db\ActiveRecord
+class Price extends \drodata\db\ActiveRecord
 {
     public function init()
     {
@@ -35,17 +36,17 @@ class Customer extends \drodata\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'customer';
+        return 'price';
     }
 
 
     /**
      * @inheritdoc
-     * @return CustomerQuery the active query used by this AR class.
+     * @return PriceQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new CustomerQuery(get_called_class());
+        return new PriceQuery(get_called_class());
     }
 
     /**
@@ -79,8 +80,10 @@ class Customer extends \drodata\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name'], 'string', 'max' => 45],
-            [['id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['id' => 'id']],
+            [['sku_id', 'value'], 'required'],
+            [['sku_id'], 'integer'],
+            [['value'], 'number'],
+            [['sku_id'], 'exist', 'skipOnError' => true, 'targetClass' => Sku::className(), 'targetAttribute' => ['sku_id' => 'id']],
         ];
         /**
          * CODE TEMPLATE
@@ -118,8 +121,9 @@ class Customer extends \drodata\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => '客户ID',
-            'name' => '姓名',
+            'id' => 'ID',
+            'sku_id' => '商品名称',
+            'value' => '单价',
         ];
     }
 
@@ -152,7 +156,7 @@ class Customer extends \drodata\db\ActiveRecord
         $visible = true;
         $hint = null;
         $confirm = null;
-        $route = ["/customer/$action", 'id' => $this->id];
+        $route = ["/price/$action", 'id' => $this->id];
 
         switch ($action) {
             case 'view':
@@ -168,12 +172,10 @@ class Customer extends \drodata\db\ActiveRecord
                     'title' => '修改',
                     'icon' => 'pencil',
                 ];
-                break;
-            case 'create-contact':
-                $route = ['/contact/create', 'category' => Contact::CATEGORY_CUSTOMER, 'user_id' => $this->id];
-                $options = [
-                    'title' => '新增地址',
-                ];
+                //$visible = Yii::$app->user->can('x');
+                if (0) {
+                    $hint = 'xx';
+                }
                 break;
 
             case 'delete':
@@ -186,6 +188,10 @@ class Customer extends \drodata\db\ActiveRecord
                         'confirm' => '确定要执行删除操作吗？',
                     ],
                 ];
+                //$visible = Yii::$app->user->can('x');
+                if (0) {
+                    $hint = 'xx';
+                }
                 break;
 
             default:
@@ -206,22 +212,25 @@ class Customer extends \drodata\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getUser()
+    public function getSku()
     {
-        return $this->hasOne(User::className(), ['id' => 'id']);
-    }
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getContacts()
-    {
-        return $this->hasMany(Contact::className(), ['user_id' => 'id']);
+        return $this->hasOne(Sku::className(), ['id' => 'sku_id']);
     }
 
-    public function getContactsDataProvider()
+    /**
+     * 通用的、无需 sort 和 pagination 的 data provider
+     * @param string $key 
+     */
+    public function getDataProvider($key)
     {
+        switch ($key) {
+            default:
+                $query = null;
+                break;
+        }
+
         return new ActiveDataProvider([
-            'query' => $this->getContacts(),
+            'query' => $query,
             'pagination' => false,
             'sort' => false,
         ]);
@@ -229,6 +238,20 @@ class Customer extends \drodata\db\ActiveRecord
 
 
     // ==== getters end ====
+
+    /**
+     * 批量保存单价
+     *
+     * @param Price[] $item
+     */
+    public static function saveMultiple($items)
+    {
+        foreach ($items as $item) {
+            if (!$item->save()) {
+                throw new Exception('Failed to save.');
+            }
+        }
+    }
 
     /**
      * CODE TEMPLATE

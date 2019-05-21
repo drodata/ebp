@@ -194,6 +194,7 @@ class Spu extends \drodata\db\ActiveRecord
                 ];
                 break;
             case 'adjust-price':
+                $route = ["/price/create", 'scenario' => 'spu', 'id' => $this->id];
                 $options = [
                     'title' => '调整价格',
                     'icon' => 'rmb',

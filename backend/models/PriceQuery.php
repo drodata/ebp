@@ -4,25 +4,20 @@ namespace backend\models;
 
 use Yii;
 /**
- * This is the ActiveQuery class for [[Sku]].
+ * This is the ActiveQuery class for [[Price]].
  *
- * @see Sku
+ * @see Price
  */
-class SkuQuery extends \yii\db\ActiveQuery
+class PriceQuery extends \yii\db\ActiveQuery
 {
     public function mine()
     {
         return $this->andWhere(['{{%cash}}.created_by' => Yii::$app->user->id]);
     }
 
-    public function spu($id)
-    {
-        return $this->andWhere(['{{%sku}}.spu_id' => $id]);
-    }
-
     /**
      * @inheritdoc
-     * @return Sku[]|array
+     * @return Price[]|array
      */
     public function all($db = null)
     {
@@ -31,7 +26,7 @@ class SkuQuery extends \yii\db\ActiveQuery
 
     /**
      * @inheritdoc
-     * @return Sku|array|null
+     * @return Price|array|null
      */
     public function one($db = null)
     {
