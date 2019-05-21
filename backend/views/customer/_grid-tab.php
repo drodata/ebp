@@ -19,7 +19,6 @@ echo GridView::widget([
     'columns' => [
         'id',
         'name',
-        'price_group_id',
         [
             'class' => 'drodata\grid\ActionColumn',
             'template' => '{view}',

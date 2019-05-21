@@ -36,7 +36,7 @@ echo GridView::widget([
             'label' => '基础价格',
             'format' => 'decimal',
             'value' => function ($model, $key, $index, $column) {
-                return $model->basePrice->price;
+                return $model->price->value;
             },
             'headerOptions' => [
                 'class' => 'text-right',

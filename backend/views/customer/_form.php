@@ -26,11 +26,11 @@ $this->registerJs($js);
     <?php else: ?>
         <?= $form->field($model, 'name')->textInput(['autoFocus' => true]) ?>
     <?php endif; ?>
-    <?= $this->render('@drodata/views/contact/_field', [
-        'form' => $form,
-        'model' => $contact,
-    ]) ?>
     <?php if ($model->isNewRecord): ?>
+        <?= $this->render('@drodata/views/contact/_field', [
+            'form' => $form,
+            'model' => $contact,
+        ]) ?>
     <?php endif; ?>
     <?php
 

@@ -21,7 +21,6 @@ use drodata\behaviors\LookupBehavior;
  * @property string $name
  * @property integer $price_group_id
  *
- * @property PriceGroup $priceGroup
  * @property User $id0
  */
 class Customer extends \drodata\db\ActiveRecord
@@ -85,7 +84,6 @@ class Customer extends \drodata\db\ActiveRecord
 
             [['price_group_id'], 'integer'],
             [['name'], 'string', 'max' => 45],
-            [['price_group_id'], 'exist', 'skipOnError' => true, 'targetClass' => PriceGroup::className(), 'targetAttribute' => ['price_group_id' => 'id']],
             [['id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['id' => 'id']],
         ];
         /**
@@ -210,13 +208,6 @@ class Customer extends \drodata\db\ActiveRecord
 
     // ==== getters start ====
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPriceGroup()
-    {
-        return $this->hasOne(PriceGroup::className(), ['id' => 'price_group_id']);
-    }
     /**
      * @return \yii\db\ActiveQuery
      */

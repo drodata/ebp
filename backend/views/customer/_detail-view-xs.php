@@ -11,7 +11,6 @@ echo DetailView::widget([
     'attributes' => [
         'id',
         'name',
-        'price_group_id',
         /*
         [
             'label' => '明细',

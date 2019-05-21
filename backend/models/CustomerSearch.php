@@ -24,7 +24,6 @@ class CustomerSearch extends Customer
     {
         return [
             [['id', 'name'], 'safe'],
-            [['price_group_id'], 'integer'],
             // usefull when filtering on related columns
             [['user.username'], 'safe'],
         ];
@@ -81,11 +80,6 @@ class CustomerSearch extends Customer
             // $query->where('0=1');
             return $dataProvider;
         }
-
-        // grid filtering conditions
-        $query->andFilterWhere([
-            'price_group_id' => $this->price_group_id,
-        ]);
 
         $query->andFilterWhere(['like', 'id', $this->id])
             ->andFilterWhere(['like', 'name', $this->name])

@@ -22,10 +22,6 @@ use backend\models\Lookup;
             <th><?= $model->getAttributeLabel('name')?></th>
             <td class="text-center"><?= $model->getAttributeLabel('name')?></td>
         </tr>
-        <tr>
-            <th><?= $model->getAttributeLabel('price_group_id')?></th>
-            <td class="text-center"><?= $model->getAttributeLabel('price_group_id')?></td>
-        </tr>
     </tbody>
     <tfoot>
     </tfoot>

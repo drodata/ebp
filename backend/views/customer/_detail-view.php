@@ -11,7 +11,6 @@ echo DetailView::widget([
     'attributes' => [
         'id',
         'name',
-        'price_group_id',
         [
             'label' => '联系方式',
             'format' => 'raw',

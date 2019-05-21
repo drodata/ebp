@@ -3,7 +3,7 @@
 use yii\db\Query;
 
 /**
- * 商品价格模组
+ * 价格分组插件，包括 price_group
  *
  */
 class m181029_074847_build_price_module extends yii\db\Migration

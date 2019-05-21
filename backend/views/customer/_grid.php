@@ -29,7 +29,6 @@ echo GridView::widget([
         'id',
         'user.username',
         'name',
-        'price_group_id',
         [
             'class' => 'drodata\grid\ActionColumn',
             'template' => '{view} {update} {create-contact} {delete}',

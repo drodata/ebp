@@ -267,19 +267,19 @@ class Sku extends \drodata\db\ActiveRecord
         return $this->hasMany(Price::className(), ['sku_id' => 'id']);
     }
     /**
+     * @return backend\models\Price | null
+     */
+    public function getPrice()
+    {
+        return $this->hasOne(Price::className(), ['sku_id' => 'id']);
+    }
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getImages()
     {
         return $this->hasMany(Attachment::className(), ['id' => 'attachment_id'])
             ->viaTable('{{%sku_image}}', ['sku_id' => 'id']);
-    }
-    /**
-     * @return backend\models\Price | null
-     */
-    public function getBasePrice()
-    {
-        return $this->getPrices()->joinWith(['priceGroup'])->base()->one();
     }
 
     /**
