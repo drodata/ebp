@@ -46,14 +46,18 @@ if (YII_ENV_DEV) {
                     'local' => '@drodata/gii/backend/controller/default',
                 ]
             ],
-            /*
             'controller-api' => [
                 'class' => 'drodata\gii\api\controller\Generator',
                 'templates' => [
                     'default' => '@drodata/gii/api/controller/default',
                 ]
             ],
-            */
+            'action-api' => [
+                'class' => 'drodata\gii\api\action\Generator',
+                'templates' => [
+                    'default' => '@drodata/gii/api/action/default',
+                ]
+            ],
             'form' => [
                 'class' => 'yii\gii\generators\form\Generator',
                 'templates' => [
