@@ -47,6 +47,7 @@ return [
             'mobile/models',
             'mobile/views',
             'mobile/controllers',
+            'api/models',
             'api/runtime',
             'api/controllers',
             'api/web/assets',
