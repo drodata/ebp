@@ -1,5 +1,11 @@
 {
     "password": "input-your-mysql-pasword-here",
     "domain": "input-your-domain-name-without-http",
-    "dbname": "input-your-mysql-database-name"
+    "dbname": "input-your-mysql-database-name",
+    "wechat": {
+        "wem": {
+            "id": "",
+            "secret": ""
+        }
+    }
 }

@@ -39,5 +39,15 @@ return [
        'authManager' => [
            'class' => 'yii\rbac\DbManager', 
        ],
+       'wem' => [
+           'class' => 'drodata\wechat\MiniProgram',
+           'appId' => $sensitive->wechat->wem->id,
+           'appSecret' => $sensitive->wechat->wem->secret,
+           'debug'  => true,
+           'logOptions' => [
+               'level' => 'debug',
+               'file'  => '/tmp/easywechat.log',
+           ],
+       ],
     ],
 ];

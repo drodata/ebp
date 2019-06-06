@@ -74,6 +74,7 @@ class WmpSession extends \drodata\db\ActiveRecord
         return [
             [['open_id', 'user_id', 'value', 'expires_at'], 'required'],
             [['user_id', 'expires_at'], 'integer'],
+            [['value'], 'unique'],
             [['open_id', 'value'], 'string', 'max' => 100],
             [['open_id', 'user_id'], 'unique', 'targetAttribute' => ['open_id', 'user_id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],

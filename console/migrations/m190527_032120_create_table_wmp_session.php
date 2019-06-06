@@ -17,7 +17,7 @@ class m190527_032120_create_table_wmp_session extends yii\db\Migration
         $this->createTable('{{%wmp_session}}', [
             'open_id' => $this->string(100)->notNull(),
             'user_id' => $this->integer()->notNull(),
-            'value' => $this->string(100)->notNull(),
+            'value' => $this->string(100)->unique()->notNull(),
             'expires_at' => $this->integer()->notNull(),
         ], $this->tableOptions);
 
