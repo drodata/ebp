@@ -112,41 +112,45 @@ use drodata\widgets\NavBar;
         ],
     ];
 
-    $rightMenuItems = [
-        [
-            'label' => Html::icon('flash'),
-            'encode' => false,
-            'visible' => YII_DEBUG && !Yii::$app->user->isGuest,
-            'url' => ['/user/switch'],
-        ],
-        [
-            'label' => Html::icon('user') . '&nbsp;' . Yii::$app->user->identity->username,
-            'encode' => false,
-            'visible' => !Yii::$app->user->isGuest,
-            'items' => [
-                 [
-                    'label' => '账户信息',
-                    'url' => ['/user/profile'],
-                ],
-                 '<li class="divider"></li>',
-                 [
-                    'label' => '登出',
-                    'url' => ['/site/logout'],
-                    'linkOptions' => [
-                        'data-method' => 'post',
-                    ],
-                ],
-            ],
-        ],
-    ];
     echo Nav::widget([
         'items' => $leftMenuItems,
         'options' => ['class' => 'navbar-nav navbar-left'],
     ]);
-    echo Nav::widget([
-        'items' => $rightMenuItems,
-        'options' => ['class' => 'navbar-nav navbar-right'],
-    ]);
+
+    if (!Yii::$app->user->isGuest) {
+        $rightMenuItems = [
+            [
+                'label' => Html::icon('flash'),
+                'encode' => false,
+                'visible' => YII_DEBUG && !Yii::$app->user->isGuest,
+                'url' => ['/user/switch'],
+            ],
+            [
+                'label' => Html::icon('user') . '&nbsp;' . Yii::$app->user->identity->username,
+                'encode' => false,
+                'visible' => !Yii::$app->user->isGuest,
+                'items' => [
+                     [
+                        'label' => '账户信息',
+                        'url' => ['/user/profile'],
+                    ],
+                     '<li class="divider"></li>',
+                     [
+                        'label' => '登出',
+                        'url' => ['/site/logout'],
+                        'linkOptions' => [
+                            'data-method' => 'post',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        echo Nav::widget([
+            'items' => $rightMenuItems,
+            'options' => ['class' => 'navbar-nav navbar-right'],
+        ]);
+    }
     NavBar::end();
     ?>
 </header>
