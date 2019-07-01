@@ -18,6 +18,72 @@ use yii\base\NotSupportedException;
 class Lookup extends \drodata\models\Lookup
 {
     /**
+     * 根据 $action 返回路由配置内容
+     *
+     * @param string $action unique
+     * @return string|array 
+     */
+    public static function route($action)
+    {
+        $map = [
+            'home' => '/',
+            // append your concrete custom routes here
+        ];
+
+        return Url::to($map[$action]);
+    }
+
+    /**
+     * 返回类似 AR 中 actionLink
+     *
+     * @param string $action action name
+     * @param array $configs 参考 Html::actionLink()
+     * @return mixed the link html content
+     */
+    public static function navigationLink($action, $configs = [])
+    {
+        // default options
+        $visible = true;
+        $hint = null;
+        $confirm = null;
+
+        switch ($action) {
+            case 'home':
+                $route = '/';
+                $options = [
+                    'title' => '返回首页',
+                    'color' => 'default',
+                ];
+                break;
+            /**
+             * TEMPLATE
+            case 'download-container-summary':
+                $route = '/export/container-summary';
+                $options = [
+                    'title' => '下载',
+                    'icon' => 'download',
+                    'color' => 'success',
+                    'data-method' => 'post',
+                ];
+                $visible = Yii::$app->user->can('president');
+                if (0) {
+                    $hint = 'hint content';
+                }
+                break;
+            */
+        }
+
+        // combine control options with common options
+        $options =  ArrayHelper::merge($options, [
+            'type' => 'icon',
+            'visible' => $visible,
+            'disabled' => $hint,
+            'disabledHint' => $hint,
+        ]);
+
+        return Html::actionLink($route, ArrayHelper::merge($options, $configs));
+    }
+    /**
      * 品牌
      */
     public static function brands()
