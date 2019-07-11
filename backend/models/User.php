@@ -41,6 +41,23 @@ class User extends \drodata\models\User
         return ArrayHelper::merge(parent::rules(), $rules);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getWmpSession()
+    {
+        return $this->hasOne(WmpSession::className(), ['user_id' => 'id']);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        $session = WmpSession::findOne(['value' => $token]);
+        return $session ? $session->user : null;
+    }
+
     public function generateUserName()
     {
         $user = static::find()->orderBy('id DESC')->limit(1)->one();
