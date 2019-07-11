@@ -3,9 +3,11 @@
 namespace api\controllers;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\data\ActiveDataProvider;
 use yii\filters\auth\QueryParamAuth;
 use backend\models\User;
+use backend\models\WmpSession;
 use common\models\LoginForm;
 
 class SiteController extends \yii\rest\Controller
@@ -23,37 +25,17 @@ class SiteController extends \yii\rest\Controller
     }
 
     /**
-     * 向会话服务器发起请求获取第三方会话 id
+     * 登录入口
+     *
      * $_POST 中包含从小程序端发送过来的参数：code
      * @return json 对象 里面包含生成的会话 id，将回传至小程序端
      */
     public function actionLogin()
     {
-        $postFields = Yii::$app->request->post();
+        $code = ArrayHelper::getValue(Yii::$app->request->getBodyParams(), 'code');
+        $resp = Yii::$app->wem->code2session($code);
 
-        $ch = curl_init();
-        curl_setopt_array($ch, [
-            CURLOPT_URL => Yii::$app->params['sessionServer']['loginUrl'],
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST => true,
-            CURLOPT_HEADER => false,
-            CURLOPT_POSTFIELDS => $postFields,
-        ]); 
-        $response = curl_exec($ch);
-        curl_close($ch);
-
-        $response = json_decode($response, true);
-
-        // 根据第三方会话 id 写入绑定信息
-        $token = $response['key'];
-        $user = User::findIdentityByAccessToken($token); 
-        $response['isBind'] = !empty($user);
-        $response['user'] = empty($user) ? [] : [
-            'username' => $user->username,
-            'roles' => $user->getRoles(),
-        ];
-
-        return $response;
+        return WmpSession::deploy($resp['openid']);
     }
 
     /**

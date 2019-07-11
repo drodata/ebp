@@ -15,4 +15,9 @@ $config = yii\helpers\ArrayHelper::merge(
 );
 
 $application = new yii\web\Application($config);
+/**
+ * 为方便在本地调试插件，在这里重新映射 extension alias
+ */
+//Yii::setAlias('@drodata', '/home/ts/www/yii2-utility'); // Debian
+Yii::setAlias('@drodata', '/Users/drodata/www/yii2-utility'); // Mac
 $application->run();
