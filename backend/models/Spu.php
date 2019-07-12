@@ -209,6 +209,15 @@ class Spu extends \drodata\db\ActiveRecord
                     'icon' => 'rmb',
                 ];
                 break;
+            case 'adjust-specification':
+                $options = [
+                    'title' => '调整规格',
+                    'icon' => 'list',
+                ];
+                if ($this->isSimple) {
+                    $hint = '仅适用于严格模式的产品';
+                }
+                break;
             case 'upload-image':
                 $route = ["/spu/image", 'do' => 'create', 'id' => $this->id];
                 $options = [
@@ -570,7 +579,6 @@ class Spu extends \drodata\db\ActiveRecord
             'spu_id' => $this->id,
             'name' => $this->name,
         ]);
-        //$sku->on(Sku::EVENT_BEFORE_INSERT, [$sku, 'initPrice']);
         if (!$sku->save()) {
             throw new \yii\db\Exception('Failed to insert.');
         }
@@ -604,7 +612,6 @@ class Spu extends \drodata\db\ActiveRecord
                 'spu_id' => $this->id,
             ]);
             $sku->name = Specification::assembleTail($map[$i]) . $this->name;
-            //$sku->on(Sku::EVENT_AFTER_INSERT, [$sku, 'initPrice']);
             if (!$sku->save()) {
                 throw new \yii\db\Exception('Failed to insert.');
             }

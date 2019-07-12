@@ -24,7 +24,7 @@ $this->params = [
 ];
 ?>
 <div class="row spu-form">
-    <div class="col-md-12 col-lg-6">
+    <div class="col-md-12 col-lg-6 col-lg-offset-3">
         <?php Box::begin([
         ]); ?>
             <?php $form = ActiveForm::begin(); ?>
@@ -41,9 +41,11 @@ $this->params = [
                                         'data' => [
                                             'toggle' => 'tooltip',
                                             'title' => "新建" . Taxonomy::item($idx),
-                                            'category' => 'spuSpecification',
-                                            'parent' => $idx,
-                                            'is-lite' => 1,
+                                            'type' => 'spu-specification',
+                                            'taxonomy' => [
+                                                'hide_parent' => 1,
+                                                'parent_id' => $idx,
+                                            ],
                                         ],
                                     ]),
                                     'asButton' => true

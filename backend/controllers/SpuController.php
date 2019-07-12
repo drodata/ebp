@@ -177,8 +177,8 @@ class SpuController extends Controller
         if (Model::loadMultiple($commonForms, Yii::$app->request->post()) && Model::validateMultiple($commonForms)) {
             $model->adjustSpecification($commonForms);
 
-            Yii::$app->session->setFlash('success', '规格已保存');
-            return $this->redirect('index');
+            Yii::$app->session->setFlash('success', '规格已更新');
+            return $this->redirect(['adjust-price', 'id' => $this->id]);
         }
 
         return $this->render('adjust-specification', [
