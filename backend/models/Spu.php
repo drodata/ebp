@@ -92,11 +92,20 @@ class Spu extends \drodata\db\ActiveRecord
         return [
             'id',
             'name',
+            'skus',
             'name2' => function ($model) {
                 return 'Hello ' . $model->name;
             }
         ];
     }
+    /*
+    public function extraFields()
+    {
+        return [
+            'skus',
+        ];
+    }
+    */
     /**
      * @inheritdoc
      */

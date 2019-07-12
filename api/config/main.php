@@ -47,6 +47,8 @@ return [
                 ],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'user'],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'brand'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'spu'],
+                /*
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => 'sku',
@@ -57,7 +59,6 @@ return [
                         ]
                     ],
                 ],
-                /*
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => 'package',
