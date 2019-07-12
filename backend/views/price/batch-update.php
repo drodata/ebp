@@ -7,7 +7,7 @@
 use drodata\helpers\Html;
 use drodata\widgets\Box;
 
-$this->title = '录入商品价格';
+$this->title = '设置商品价格';
 $this->params = [
     'title' => $this->title,
     'subtitle' => '',

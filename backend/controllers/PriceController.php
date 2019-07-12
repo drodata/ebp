@@ -39,7 +39,7 @@ class PriceController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['create', 'update', 'delete'],
+                        'actions' => ['batch-update', 'update', 'delete'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -135,16 +135,21 @@ class PriceController extends Controller
      * @param string $scenario 可用的值包括：'spu'
      * @param string $id 当 scenario 值为 'spu' 时是 spu id.
      */
-    public function actionCreate($scenario, $id)
+    public function actionBatchUpdate($scenario, $id)
     {
         $items = [];
 
         switch ($scenario) {
             case 'spu':
                 foreach (Sku::find()->spu($id)->all() as $sku) {
-                    $items[$sku->id] = $sku->price ?: new Price(['sku_id' => $sku->id]);
+                    $items[$sku->id] = $sku->price;
                 }
                 $route = '/spu/';
+                break;
+            case 'sku':
+                $sku = Sku::findOne($id);
+                $items[$sku->id] = $sku->price;
+                $route = '/sku/';
                 break;
         }
 
@@ -155,7 +160,7 @@ class PriceController extends Controller
             return $this->redirect($route);
         }
 
-        return $this->render('create', [
+        return $this->render('batch-update', [
             'items' => $items,
         ]);
     }

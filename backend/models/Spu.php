@@ -203,7 +203,7 @@ class Spu extends \drodata\db\ActiveRecord
                 ];
                 break;
             case 'adjust-price':
-                $route = ["/price/create", 'scenario' => 'spu', 'id' => $this->id];
+                $route = ["/price/batch-update", 'scenario' => 'spu', 'id' => $this->id];
                 $options = [
                     'title' => '调整价格',
                     'icon' => 'rmb',
@@ -507,7 +507,8 @@ class Spu extends \drodata\db\ActiveRecord
             $d['message'] = Html::tag('span', Html::icon('check') . '已保存', [
                 'class' => 'text-success',
             ]);
-            $d['redirectUrl'] = Url::to(['/sku/index']);
+            Yii::$app->session->setFlash('success', '商品已创建，现在请设置单价');
+            $d['redirectUrl'] = Url::to($model->getActionOptions('adjust-price')[0]);
         }
 
         return $d;
@@ -569,6 +570,7 @@ class Spu extends \drodata\db\ActiveRecord
             'spu_id' => $this->id,
             'name' => $this->name,
         ]);
+        //$sku->on(Sku::EVENT_BEFORE_INSERT, [$sku, 'initPrice']);
         if (!$sku->save()) {
             throw new \yii\db\Exception('Failed to insert.');
         }
@@ -602,6 +604,7 @@ class Spu extends \drodata\db\ActiveRecord
                 'spu_id' => $this->id,
             ]);
             $sku->name = Specification::assembleTail($map[$i]) . $this->name;
+            //$sku->on(Sku::EVENT_AFTER_INSERT, [$sku, 'initPrice']);
             if (!$sku->save()) {
                 throw new \yii\db\Exception('Failed to insert.');
             }

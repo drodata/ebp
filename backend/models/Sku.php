@@ -38,7 +38,8 @@ class Sku extends \drodata\db\ActiveRecord
     public function init()
     {
         parent::init();
-        //$this->on(self::EVENT_BEFORE_DELETE, [$this, 'deleteItems']);
+
+        $this->on(self::EVENT_AFTER_INSERT, [$this, 'initPrice']);
     }
 
     /**
@@ -210,6 +211,13 @@ class Sku extends \drodata\db\ActiveRecord
                     ],
                 ];
                 break;
+            case 'adjust-price':
+                $route = ["/price/batch-update", 'scenario' => 'sku', 'id' => $this->id];
+                $options = [
+                    'title' => '调整价格',
+                    'icon' => 'rmb',
+                ];
+                break;
 
             default:
                 break;
@@ -347,6 +355,10 @@ class Sku extends \drodata\db\ActiveRecord
     }
      */
 
+    public function getPriceValue()
+    {
+        return $this->price ? $this->price->value : null;
+    }
     // ==== getters end ====
 
     /**
@@ -367,6 +379,21 @@ class Sku extends \drodata\db\ActiveRecord
     }
 
     // ==== event-handlers begin ====
+
+    /**
+     * Init price
+     *
+     * Triggered by self::EVENT_AFTER_INSERT
+     *
+     */
+    public function initPrice($event)
+    {
+        $price = new Price(['sku_id' => $this->id]);
+
+        if (!$price->save()) {
+            throw new Exception($price->stringifyErrors());
+        }
+    }
 
     /**
      * 保存附件。

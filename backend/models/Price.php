@@ -80,9 +80,9 @@ class Price extends \drodata\db\ActiveRecord
     public function rules()
     {
         return [
-            [['sku_id', 'value'], 'required'],
+            [['sku_id'], 'required'],
             [['sku_id'], 'integer'],
-            [['value'], 'number'],
+            [['value'], 'number', 'min' => 0],
             [['sku_id'], 'exist', 'skipOnError' => true, 'targetClass' => Sku::className(), 'targetAttribute' => ['sku_id' => 'id']],
         ];
         /**
@@ -243,6 +243,7 @@ class Price extends \drodata\db\ActiveRecord
      * 批量保存单价
      *
      * @param Price[] $item
+     * @return array 
      */
     public static function saveMultiple($items)
     {
@@ -251,6 +252,8 @@ class Price extends \drodata\db\ActiveRecord
                 throw new Exception('Failed to save.');
             }
         }
+
+        return [true, '单价已更新'];
     }
 
     /**

@@ -33,7 +33,7 @@ echo GridView::widget([
             },
         ],
         [
-            'label' => '基础价格',
+            'label' => '单价',
             'format' => 'decimal',
             'value' => function ($model, $key, $index, $column) {
                 return $model->price->value;
@@ -45,8 +45,8 @@ echo GridView::widget([
                 'class' => 'text-right',
             ],
         ],
-        'stock',
         /*
+        'stock',
         [
             'class' => 'drodata\grid\ActionColumn',
             'template' => '{view} {update} {delete}',

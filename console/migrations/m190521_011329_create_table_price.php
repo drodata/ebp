@@ -23,8 +23,8 @@ class m190521_011329_create_table_price extends yii\db\Migration
     {
         $this->createTable('{{%price}}', [
             'id' => $this->bigPrimaryKey(),
-            'sku_id' => $this->bigInteger()->notNull()->comment('商品名称'),
-            'value' => $this->decimal(10,2)->notNull()->comment('单价'),
+            'sku_id' => $this->bigInteger()->notNull()->comment('商品编号'),
+            'value' => $this->decimal(10,2)->comment('单价'),
         ], $this->tableOptions);
 
         $this->addForeignKey(

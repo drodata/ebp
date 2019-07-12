@@ -19,7 +19,7 @@ use backend\models\Lookup;
     <tr class="itemRow" data-key="<?= $token ?>">
         <td><?= $item->sku->name ?></td>
         <td>
-            <?= $form->field($item, "[$token]value")->label(false)->input('number', ['step' => 0.01]) ?>
+            <?= $form->field($item, "[$token]value")->label(false)->input('number', ['step' => 0.01, 'placeholder' => '选填']) ?>
         </td>
         <td>
             <?= $form->field($item, "[$token]sku_id")->label(false)->hiddenInput() ?>
