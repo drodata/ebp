@@ -302,6 +302,13 @@ class Sku extends \drodata\db\ActiveRecord
         return $this->hasMany(Attachment::className(), ['id' => 'attachment_id'])
             ->viaTable('{{%sku_image}}', ['sku_id' => 'id']);
     }
+    /**
+     * @return Attachment
+     */
+    public function getImage()
+    {
+        return $this->getImages()->one();
+    }
 
     /**
      * 返回常用的 DP
@@ -330,6 +337,7 @@ class Sku extends \drodata\db\ActiveRecord
                     'redirectRoute' => ['/sku/image', 'do' => 'manage', 'id' => $this->id],
                     'navigationLinks' => [
                         $this->actionLink('upload-image', ['type' => 'button', 'title' => '继续上传图片']),
+                        Lookup::navigationLink('sku', ['type' => 'button']),
                     ],
                     'dataProvider' => $this->getDataProvider($action),
                 ];
@@ -371,6 +379,20 @@ class Sku extends \drodata\db\ActiveRecord
     public function getPriceValue()
     {
         return $this->price ? $this->price->value : null;
+    }
+    /**
+     *
+     */
+    public function getThumbnail()
+    {
+        if ($this->image) {
+            return $this->image->thumbnail;
+        }
+        if ($this->spu->image) {
+            return $this->spu->image->thumbnail;
+        }
+
+        return Attachment::defaultThumbnail();
     }
     // ==== getters end ====
 

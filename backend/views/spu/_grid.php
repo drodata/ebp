@@ -29,7 +29,7 @@ echo GridView::widget([
             'label' => '',
             'format' => 'raw',
             'value' => function ($model, $key, $index, $column) {
-                return $model->images[0]->thumbnail;
+                return $model->thumbnail;
             },
             'contentOptions' => [
                 'style' => 'vertical-align:middle;',

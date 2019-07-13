@@ -1,5 +1,5 @@
 <?php
 return [
     // AdminLTE skin name
-    'skin' => 'blue',
+    'skin' => 'black',
 ];

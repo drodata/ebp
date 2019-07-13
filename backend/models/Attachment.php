@@ -200,7 +200,7 @@ class Attachment extends \drodata\db\ActiveRecord
 
     public static function defaultUrl($size= 'original')
     {
-        return $this->mediaWeb . "/default-$size.png";
+        return Yii::getAlias('@staticweb') . "/default-$size.png";
     }
     /**
      * - 'o': origin 
@@ -234,6 +234,8 @@ class Attachment extends \drodata\db\ActiveRecord
             'style' => "max-width:{$width}px",
         ];
         
+        return Html::img($this->getUrl('t'), $imgOptions);
+        /*
         return Html::a(
             Html::img($this->getUrl('t'), $imgOptions),
             $this->url,
@@ -241,6 +243,14 @@ class Attachment extends \drodata\db\ActiveRecord
                 'target' => '_blank',
             ]
         );
+        */
+    }
+    public static function defaultThumbnail($width = 60)
+    {
+        return Html::img(static::defaultUrl('t'), [
+            'title' => '未上传图片',
+            'style' => "max-width:{$width}px",
+        ]);
     }
 
     /**

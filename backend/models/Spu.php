@@ -293,13 +293,24 @@ class Spu extends \drodata\db\ActiveRecord
         return $this->hasMany(Attachment::className(), ['id' => 'attachment_id'])
             ->viaTable('{{%spu_image}}', ['spu_id' => 'id']);
     }
+    /**
+     * @return Attachment
+     */
+    public function getImage()
+    {
+        return $this->getImages()->one();
+    }
 
     /**
-     * @return Price[]|null
+     *
      */
-    public function getBasePrices()
+    public function getThumbnail()
     {
-        return Price::find()->joinWith(['priceGroup', 'sku'])->ofSpu($this->id)->base()->indexBy('sku_id')->all();
+        if ($this->image) {
+            return $this->image->thumbnail;
+        }
+
+        return Attachment::defaultThumbnail();
     }
 
     /**
@@ -368,6 +379,7 @@ class Spu extends \drodata\db\ActiveRecord
                     'redirectRoute' => ['/spu/image', 'do' => 'manage', 'id' => $this->id],
                     'navigationLinks' => [
                         $this->actionLink('upload-image', ['type' => 'button', 'title' => '继续上传图片']),
+                        Lookup::navigationLink('spu', ['type' => 'button']),
                     ],
                     'dataProvider' => $this->getDataProvider($action),
                 ];

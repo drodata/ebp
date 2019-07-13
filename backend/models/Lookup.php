@@ -55,6 +55,20 @@ class Lookup extends \drodata\models\Lookup
                     'color' => 'default',
                 ];
                 break;
+            case 'spu':
+                $route = '/spu';
+                $options = [
+                    'title' => '返回产品页面',
+                    'color' => 'default',
+                ];
+                break;
+            case 'sku':
+                $route = '/sku';
+                $options = [
+                    'title' => '返回商品页面',
+                    'color' => 'default',
+                ];
+                break;
             /**
              * TEMPLATE
             case 'download-container-summary':
