@@ -40,6 +40,9 @@ class Sku extends \drodata\db\ActiveRecord
         parent::init();
 
         $this->on(self::EVENT_AFTER_INSERT, [$this, 'initPrice']);
+        $this->on(self::EVENT_BEFORE_DELETE, [$this, 'deleteImages']);
+        $this->on(self::EVENT_BEFORE_DELETE, [$this, 'deletePrice']);
+        $this->on(self::EVENT_BEFORE_DELETE, [$this, 'deleteSkuSpecifications']);
     }
 
     /**
@@ -135,7 +138,7 @@ class Sku extends \drodata\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'id' => '商品编号',
             'spu_id' => 'Spu ID',
             'name' => '名称',
             'status' => '状态',
@@ -210,6 +213,9 @@ class Sku extends \drodata\db\ActiveRecord
                         'confirm' => '确定要执行删除操作吗？',
                     ],
                 ];
+                if ($this->spu->isStrict) {
+                    $hint = '严格模式商品无法删除，只能隐藏或下架';
+                }
                 break;
             case 'adjust-price':
                 $route = ["/price/batch-update", 'scenario' => 'sku', 'id' => $this->id];
@@ -240,6 +246,13 @@ class Sku extends \drodata\db\ActiveRecord
     public function getSpu()
     {
         return $this->hasOne(Spu::className(), ['id' => 'spu_id']);
+    }
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSkuSpecifications()
+    {
+        return $this->hasMany(SkuSpecification::className(), ['sku_id' => 'id']);
     }
     /**
      * @return \yii\db\ActiveQuery
@@ -396,40 +409,46 @@ class Sku extends \drodata\db\ActiveRecord
     }
 
     /**
-     * 保存附件。
-     *
-     * 可由 self::EVENT_AFTER_INSERT, self::EVENT_UPLOAD 等触发
-     *
-     * @param yii\web\UploadedFile $event->data 承兑图片
-    public function insertImages($event)
-    {
-        $images = $event->data;
-
-        Media::store([
-            'files' => $images,
-            'referenceId' => $this->id,
-            'type' => Media::TYPE_IMAGE,
-            'category' => Media::CATEGORY_ACCEPTANCE,
-            'from2to' => Mapping::ACCEPTANCE2MEDIA,
-        ]);
-    }
+     * 删除关联 price. 由 self::EVENT_BEFORE_DELETE 触发
      */
-
+    public function deletePrice($event)
+    {
+        if (empty($this->price)) {
+            return;
+        }
+        if (!$this->price->delete()) {
+            throw new Exception('Failed to delete.');
+        }
+    }
     /**
-     * 删除文件
-     *
-     * 由 self::EVENT_BEFORE_DELETE 触发
+     * 删除商品图片. 由 self::EVENT_BEFORE_DELETE 触发
+     */
     public function deleteImages($event)
     {
         if (empty($this->images)) {
             return;
         }
-        foreach ($this->images as $image) {
-            if (!$image->delete()) {
-                throw new Exception('Failed to flush image.');
+        foreach ($this->images as $item) {
+            /* @var Attachment $item */
+            if (!$item->delete()) {
+                throw new Exception('Failed to delete.');
             }
         }
     }
+    /**
+     * 删除 sku_specification records. 由 self::EVENT_BEFORE_DELETE 触发
      */
+    public function deleteSkuSpecifications($event)
+    {
+        if (empty($this->skuSpecifications)) {
+            return;
+        }
+        foreach ($this->skuSpecifications as $item) {
+            /* @var SkuSpecification $item */
+            if (!$item->delete()) {
+                throw new Exception('Failed to delete.');
+            }
+        }
+    }
     // ==== event-handlers end ====
 }

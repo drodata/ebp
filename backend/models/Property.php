@@ -35,7 +35,7 @@ class Property extends \drodata\db\ActiveRecord
     public function init()
     {
         parent::init();
-        //$this->on(self::EVENT_BEFORE_DELETE, [$this, 'deleteItems']);
+        $this->on(self::EVENT_BEFORE_DELETE, [$this, 'deleteSpecifications']);
     }
 
     /**
@@ -433,20 +433,19 @@ class Property extends \drodata\db\ActiveRecord
      */
 
     /**
-     * 删除文件
-     *
-     * 由 self::EVENT_BEFORE_DELETE 触发
-    public function deleteImages($event)
+     * 删除 specification. 由 self::EVENT_BEFORE_DELETE 触发
+     */
+    public function deleteSpecifications($event)
     {
-        if (empty($this->images)) {
+        if (empty($this->specifications)) {
             return;
         }
-        foreach ($this->images as $image) {
-            if (!$image->delete()) {
-                throw new Exception('Failed to flush image.');
+        foreach ($this->specifications as $item) {
+            /* @var Specification $item */
+            if (!$item->delete()) {
+                throw new Exception('Failed to delete.');
             }
         }
     }
-     */
     // ==== event-handlers end ====
 }

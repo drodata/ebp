@@ -37,6 +37,10 @@ class Spu extends \drodata\db\ActiveRecord
     public function init()
     {
         parent::init();
+
+        // 注意绑定顺序，否则会引起数据一致性错误
+        $this->on(self::EVENT_BEFORE_DELETE, [$this, 'deleteSkus']);
+        $this->on(self::EVENT_BEFORE_DELETE, [$this, 'deleteProperties']);
     }
 
     /**
@@ -677,20 +681,34 @@ class Spu extends \drodata\db\ActiveRecord
     }
 
     /**
-     * 删除文件
-     *
-     * 由 self::EVENT_BEFORE_DELETE 触发
-    public function deleteImages($event)
+     * 删除 skus. 由 self::EVENT_BEFORE_DELETE 触发
+     */
+    public function deleteSkus($event)
     {
-        if (empty($this->images)) {
+        if (empty($this->skus)) {
             return;
         }
-        foreach ($this->images as $image) {
-            if (!$image->delete()) {
-                throw new Exception('Failed to flush image.');
+        foreach ($this->skus as $item) {
+            /* @var Sku $item */
+            if (!$item->delete()) {
+                throw new Exception('Failed to delete.');
             }
         }
     }
+    /**
+     * 删除 properties. 由 self::EVENT_BEFORE_DELETE 触发
      */
+    public function deleteProperties($event)
+    {
+        if (empty($this->properties)) {
+            return;
+        }
+        foreach ($this->properties as $item) {
+            /* @var Property $item */
+            if (!$item->delete()) {
+                throw new Exception('Failed to delete.');
+            }
+        }
+    }
     // ==== event-handlers end ====
 }
