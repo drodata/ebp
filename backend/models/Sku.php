@@ -87,9 +87,26 @@ class Sku extends \drodata\db\ActiveRecord
             ],
         ];
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function fields()
+    {
+        $fields = parent::fields();
+
+        // remove fields that contain sensitive information
+        unset($fields['stock'], $fields['threshold'], $fields['status'], $fields['visible']);
+
+        return ArrayHelper::merge($fields, [
+            'uprice' => function ($model) {
+                return $model->price->value;
+            }
+        ]);
+    }
     public function extraFields()
     {
-        return ['spu'];
+        return ['spu', 'price'];
     }
 
     /**

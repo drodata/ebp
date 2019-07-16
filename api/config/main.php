@@ -48,17 +48,17 @@ return [
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'user'],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'brand'],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'spu'],
-                /*
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => 'sku',
                     'ruleConfig' => [
                         'class' => 'yii\web\UrlRule',
                         'defaults' => [
-                            'expand' => 'spu',
+                            //'expand' => 'price',
                         ]
                     ],
                 ],
+                /*
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => 'package',
