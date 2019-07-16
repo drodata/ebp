@@ -9,8 +9,8 @@ echo DetailView::widget([
     'model' => $model,
     'attributes' => [
         'id',
-        'spu_id',
         'name',
+        'price.value:decimal',
         'stock:integer',
         'threshold:integer',
         'description',

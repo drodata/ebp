@@ -140,7 +140,7 @@ class Sku extends \drodata\db\ActiveRecord
         return [
             'id' => '商品编号',
             'spu_id' => 'Spu ID',
-            'name' => '名称',
+            'name' => '商品名称',
             'status' => '状态',
             'visible' => 'Visible',
             'stock' => '库存',
@@ -376,10 +376,6 @@ class Sku extends \drodata\db\ActiveRecord
     }
      */
 
-    public function getPriceValue()
-    {
-        return $this->price ? $this->price->value : null;
-    }
     /**
      *
      */

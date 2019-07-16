@@ -32,22 +32,6 @@ $this->registerJs($js);
         <!--
         'inputTemplate' => '<div class="input-group"><div class="input-group-addon">$</div>{input}</div>'
         -->
-    <?= $form->field($model, 'spu_id')->widget(Select2::classname(), [
-        'data' => [],
-        'options' => ['placeholder' => '请选择'],
-        'addon' => [
-            'append' => [
-                'content' => Html::button(Html::icon('plus'), [
-                    'class' => 'btn btn-default', 
-                    'data' => [
-                        'toggle' => 'tooltip',
-                        'title' => '新建', 
-                    ],
-                ]),
-                'asButton' => true
-            ]
-        ],
-    ]) ?>
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'status')->inline()->radioList(Lookup::items('sku-status')) ?>
     <?= $form->field($model, 'visible')->inline()->radioList(Lookup::items('boolean')) ?>

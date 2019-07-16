@@ -15,10 +15,7 @@ class SkuSearch extends Sku
 {
     public function attributes()
     {
-        return parent::attributes();
-
-        // add related fields to searchable attributes
-        // return array_merge(parent::attributes(), ['author.name']);
+        return array_merge(parent::attributes(), ['price.value']);
     }
     /**
      * @inheritdoc
@@ -29,7 +26,7 @@ class SkuSearch extends Sku
             [['id', 'name', 'description', 'introduction'], 'safe'],
             [['spu_id', 'status', 'visible', 'stock', 'threshold'], 'integer'],
             // usefull when filtering on related columns
-            //[['author.name'], 'safe'],
+            [['price.value'], 'safe'],
         ];
     }
 
@@ -51,14 +48,7 @@ class SkuSearch extends Sku
      */
     public function search($params)
     {
-        $query = Sku::find();
-        /*
-        $query = Sku::find()->joinWith(['company']);
-            ->where(['{{%company}}.category' => Company::CATEGORY_LOGISTICS]);
-        if (Yii::$app->user->can('saler') && !Yii::$app->user->can('saleDirector')) {
-            $query->andWhere(['{{%interaction}}.created_by' => Yii::$app->user->id]);
-        }
-        */
+        $query = Sku::find()->joinWith(['price']);
 
         // add conditions that should always apply here
 
@@ -68,11 +58,17 @@ class SkuSearch extends Sku
 
         $dataProvider->setSort([
             'attributes' => [
-                /*
-                'company.x' => [
-                    'asc'  => ['{{%company}}.x USING gbk)' => SORT_ASC],
-                    'desc' => ['{{%company}}.x USING gbk)' => SORT_DESC],
+                'id',
+                'name',
+                'status',
+                'stock',
+                'threshold',
+                'description',
+                'price.value' => [
+                    'asc'  => ['{{%price}}.value' => SORT_ASC],
+                    'desc' => ['{{%price}}.value' => SORT_DESC],
                 ],
+                /*
                 'company.name' => [
                     'asc'  => ['CONVERT({{%company}}.full_name USING gbk)' => SORT_ASC],
                     'desc' => ['CONVERT({{%company}}.full_name USING gbk)' => SORT_DESC],
@@ -105,8 +101,8 @@ class SkuSearch extends Sku
         $query->andFilterWhere(['like', 'id', $this->id])
             ->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'description', $this->description])
-            ->andFilterWhere(['like', 'introduction', $this->introduction]);
-            //->andFilterWhere(['like', '{{%t}}.c', $this->getAttribute('t.c')]);
+            ->andFilterWhere(['like', 'introduction', $this->introduction])
+            ->andFilterWhere(['like', 'price.value', $this->getAttribute('price.value')]);
 
         return $dataProvider;
     }

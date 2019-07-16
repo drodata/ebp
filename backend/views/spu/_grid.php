@@ -35,6 +35,7 @@ echo GridView::widget([
                 'style' => 'vertical-align:middle;',
             ],
         ],
+        /*
         [
             'attribute' => 'mode',
             'filter' => Lookup::items('spu-mode'),
@@ -46,6 +47,7 @@ echo GridView::widget([
                 'style' => 'vertical-align:middle;',
             ],
         ],
+        */
         [
             'attribute' => 'type',
             'filter' => Lookup::items('spu-type'),

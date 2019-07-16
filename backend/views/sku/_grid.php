@@ -39,16 +39,15 @@ echo GridView::widget([
         'name',
         'status',
         [
-            'label' => '价格',
+            'attribute' => 'price.value',
             'format' => 'decimal',
-            'value' => function ($model, $key, $index, $column) {
-                return $model->getPriceValue();
-            },
             'headerOptions' => ['class' => 'text-right'],
             'contentOptions' => [
                 'class' => 'text-right',
             ],
         ],
+        'description',
+        /*
         [
             'attribute' => 'stock',
             'format' => 'integer',
@@ -71,8 +70,7 @@ echo GridView::widget([
                 'class' => 'text-right',
             ],
         ],
-        'description',
-        'introduction',
+        */
         [
             'class' => 'drodata\grid\ActionColumn',
             'template' => '{view} {update} {adjust-price} {upload-image} {delete}',
