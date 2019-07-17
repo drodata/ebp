@@ -178,7 +178,7 @@ class SpuController extends Controller
             $model->adjustSpecification($commonForms);
 
             Yii::$app->session->setFlash('success', '规格已更新');
-            return $this->redirect(['adjust-price', 'id' => $id]);
+            return $this->redirect(["/price/batch-update", 'scenario' => 'spu', 'id' => $model->id]);
         }
 
         return $this->render('adjust-specification', [

@@ -313,6 +313,20 @@ class Spu extends \drodata\db\ActiveRecord
         return Attachment::defaultThumbnail();
     }
 
+    public function getImageUrls($size = 'o')
+    {
+        if (empty($this->images)) {
+            return [Attachment::defaultUrl('l')];
+        }
+
+        $urls = [];
+        foreach ($this->images as $image) {
+            $urls[] = $image->getUrl($size);
+        }
+
+        return $urls;
+    }
+
     /**
      * @return User|null
     public function getCreator()

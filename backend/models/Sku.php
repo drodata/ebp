@@ -101,6 +101,9 @@ class Sku extends \drodata\db\ActiveRecord
         return ArrayHelper::merge($fields, [
             'uprice' => function ($model) {
                 return $model->price->value;
+            },
+            'imageUrls' => function ($model) {
+                return $model->getImageUrls();
             }
         ]);
     }
@@ -406,6 +409,20 @@ class Sku extends \drodata\db\ActiveRecord
         }
 
         return Attachment::defaultThumbnail();
+    }
+
+    public function getImageUrls($size = 'o')
+    {
+        if (empty($this->images)) {
+            return $this->spu->getImageUrls($size);
+        }
+
+        $urls = [];
+        foreach ($this->images as $image) {
+            $urls[] = $image->getUrl($size);
+        }
+
+        return $urls;
     }
     // ==== getters end ====
 
